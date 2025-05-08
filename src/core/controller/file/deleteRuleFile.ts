@@ -3,8 +3,8 @@ import { RuleFileRequest, RuleFile } from "@shared/proto/file"
 import { FileMethodHandler } from "./index"
 import {
 	deleteRuleFile as deleteRuleFileImpl,
-	refreshClineRulesToggles,
-} from "@core/context/instructions/user-instructions/cline-rules"
+	refreshMayaiRulesToggles,
+} from "@core/context/instructions/user-instructions/mayai-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import * as vscode from "vscode"
 import * as path from "path"
@@ -32,7 +32,7 @@ export const deleteRuleFile: FileMethodHandler = async (controller: Controller, 
 		throw new Error(result.message || "Failed to delete rule file")
 	}
 
-	await refreshClineRulesToggles(controller.context, cwd)
+	await refreshMayaiRulesToggles(controller.context, cwd)
 	await refreshExternalRulesToggles(controller.context, cwd)
 	await controller.postStateToWebview()
 

@@ -9,7 +9,7 @@ tmp
 
 pnpm-lock.yaml
 
-.clineignore
+.mayaiignore
 .venv
 .actrc
 

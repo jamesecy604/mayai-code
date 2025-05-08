@@ -1,7 +1,7 @@
 import { fileExistsAtPath, isDirectory, readDirectory } from "@utils/fs"
 import * as path from "path"
 import fs from "fs/promises"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { MayaiRulesToggles } from "@shared/mayai-rules"
 
 /**
  * Recursively traverses directory and finds all files, including checking for optional whitelisted file extension
@@ -31,9 +31,9 @@ export async function readDirectoryRecursive(directoryPath: string, allowedFileE
  */
 export async function synchronizeRuleToggles(
 	rulesDirectoryPath: string,
-	currentToggles: ClineRulesToggles,
+	currentToggles: MayaiRulesToggles,
 	allowedFileExtension: string = "",
-): Promise<ClineRulesToggles> {
+): Promise<MayaiRulesToggles> {
 	// Create a copy of toggles to modify
 	const updatedToggles = { ...currentToggles }
 
@@ -97,14 +97,14 @@ export async function synchronizeRuleToggles(
 /**
  * Certain project rules have more than a single location where rules are allowed to be stored
  */
-export function combineRuleToggles(toggles1: ClineRulesToggles, toggles2: ClineRulesToggles): ClineRulesToggles {
+export function combineRuleToggles(toggles1: MayaiRulesToggles, toggles2: MayaiRulesToggles): MayaiRulesToggles {
 	return { ...toggles1, ...toggles2 }
 }
 
 /**
  * Read the content of rules files
  */
-export const getRuleFilesTotalContent = async (rulesFilePaths: string[], basePath: string, toggles: ClineRulesToggles) => {
+export const getRuleFilesTotalContent = async (rulesFilePaths: string[], basePath: string, toggles: MayaiRulesToggles) => {
 	const ruleFilesTotalContent = await Promise.all(
 		rulesFilePaths.map(async (filePath) => {
 			const ruleFilePath = path.resolve(basePath, filePath)

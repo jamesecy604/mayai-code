@@ -31,50 +31,50 @@ const ACTION_METADATA: {
 		id: "readFiles",
 		label: "Read project files",
 		shortName: "Read Local",
-		description: "Allows Cline to read files within your workspace.",
+		description: "Allows Mayai to read files within your workspace.",
 	},
 	{
 		id: "readFilesExternally",
 		label: "Read all files",
 		shortName: "Read (all)",
-		description: "Allows Cline to read any file on your computer.",
+		description: "Allows Mayai to read any file on your computer.",
 	},
 	{
 		id: "editFiles",
 		label: "Edit project files",
 		shortName: "Edit",
-		description: "Allows Cline to modify files within your workspace.",
+		description: "Allows Mayai to modify files within your workspace.",
 	},
 	{
 		id: "editFilesExternally",
 		label: "Edit all files",
 		shortName: "Edit (all)",
-		description: "Allows Cline to modify any file on your computer.",
+		description: "Allows Mayai to modify any file on your computer.",
 	},
 	{
 		id: "executeSafeCommands",
 		label: "Execute safe commands",
 		shortName: "Safe Commands",
 		description:
-			"Allows Cline to execute of safe terminal commands. If the model determines a command is potentially destructive, it will still require approval.",
+			"Allows Mayai to execute of safe terminal commands. If the model determines a command is potentially destructive, it will still require approval.",
 	},
 	{
 		id: "executeAllCommands",
 		label: "Execute all commands",
 		shortName: "All Commands",
-		description: "Allows Cline to execute all terminal commands. Use at your own risk.",
+		description: "Allows Mayai to execute all terminal commands. Use at your own risk.",
 	},
 	{
 		id: "useBrowser",
 		label: "Use the browser",
 		shortName: "Browser",
-		description: "Allows Cline to launch and interact with any website in a browser.",
+		description: "Allows Mayai to launch and interact with any website in a browser.",
 	},
 	{
 		id: "useMcp",
 		label: "Use MCP servers",
 		shortName: "MCP",
-		description: "Allows Cline to use configured MCP servers which may modify filesystem or interact with APIs.",
+		description: "Allows Mayai to use configured MCP servers which may modify filesystem or interact with APIs.",
 	},
 ]
 
@@ -333,7 +333,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 							color: getAsVar(VSC_DESCRIPTION_FOREGROUND),
 							fontSize: "12px",
 						}}>
-						Auto-approve allows Cline to perform the following actions without asking for permission. Please use with
+						Auto-approve allows Mayai to perform the following actions without asking for permission. Please use with
 						caution and only enable if you understand the risks.
 					</div>
 					{ACTION_METADATA.map((action) => {
@@ -446,7 +446,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 							fontSize: "12px",
 							marginBottom: "10px",
 						}}>
-						Cline will automatically make this many API requests before asking for approval to proceed with the task.
+						Mayai will automatically make this many API requests before asking for approval to proceed with the task.
 					</div>
 					<div style={{ margin: "6px 0" }}>
 						<VSCodeCheckbox
@@ -463,7 +463,7 @@ const AutoApproveMenu = ({ style }: AutoApproveMenuProps) => {
 								color: getAsVar(VSC_DESCRIPTION_FOREGROUND),
 								fontSize: "12px",
 							}}>
-							Receive system notifications when Cline requires approval to proceed or when a task is completed.
+							Receive system notifications when Mayai requires approval to proceed or when a task is completed.
 						</div>
 					</div>
 				</div>

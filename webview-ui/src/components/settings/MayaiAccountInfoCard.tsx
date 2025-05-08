@@ -5,7 +5,7 @@ import { useExtensionState } from "@/context/ExtensionStateContext"
 import { AccountServiceClient } from "@/services/grpc-client"
 import { EmptyRequest } from "@shared/proto/common"
 
-export const ClineAccountInfoCard = () => {
+export const MayaiAccountInfoCard = () => {
 	const { user: firebaseUser, handleSignOut } = useFirebaseAuth()
 	const { userInfo, apiConfiguration } = useExtensionState()
 
@@ -69,7 +69,7 @@ export const ClineAccountInfoCard = () => {
 				// </div>
 				<div>
 					<VSCodeButton onClick={handleLogin} className="mt-0">
-						Sign Up with Cline
+						Sign Up with Mayai
 					</VSCodeButton>
 				</div>
 			)}

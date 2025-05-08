@@ -3,8 +3,8 @@ import { RuleFileRequest, RuleFile } from "@shared/proto/file"
 import { FileMethodHandler } from "./index"
 import {
 	createRuleFile as createRuleFileImpl,
-	refreshClineRulesToggles,
-} from "@core/context/instructions/user-instructions/cline-rules"
+	refreshMayaiRulesToggles,
+} from "@core/context/instructions/user-instructions/mayai-rules"
 import * as vscode from "vscode"
 import * as path from "path"
 import { handleFileServiceRequest } from "./index"
@@ -37,7 +37,7 @@ export const createRuleFile: FileMethodHandler = async (controller: Controller, 
 		// Still open it for editing
 		await handleFileServiceRequest(controller, "openFile", { value: filePath })
 	} else {
-		await refreshClineRulesToggles(controller.context, cwd)
+		await refreshMayaiRulesToggles(controller.context, cwd)
 		await controller.postStateToWebview()
 
 		await handleFileServiceRequest(controller, "openFile", { value: filePath })

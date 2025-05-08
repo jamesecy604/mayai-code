@@ -7,10 +7,10 @@ import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import RulesToggleList from "./RulesToggleList"
 import Tooltip from "@/components/common/Tooltip"
 
-const ClineRulesToggleModal: React.FC = () => {
+const MayaiRulesToggleModal: React.FC = () => {
 	const {
-		globalClineRulesToggles = {},
-		localClineRulesToggles = {},
+		globalMayaiRulesToggles = {},
+		localMayaiRulesToggles = {},
 		localCursorRulesToggles = {},
 		localWindsurfRulesToggles = {},
 	} = useExtensionState()
@@ -23,17 +23,17 @@ const ClineRulesToggleModal: React.FC = () => {
 
 	useEffect(() => {
 		if (isVisible) {
-			vscode.postMessage({ type: "refreshClineRules" })
+			vscode.postMessage({ type: "refreshMayaiRules" })
 		}
 	}, [isVisible])
 
 	// Format global rules for display with proper typing
-	const globalRules = Object.entries(globalClineRulesToggles || {})
+	const globalRules = Object.entries(globalMayaiRulesToggles || {})
 		.map(([path, enabled]): [string, boolean] => [path, enabled as boolean])
 		.sort(([a], [b]) => a.localeCompare(b))
 
 	// Format local rules for display with proper typing
-	const localRules = Object.entries(localClineRulesToggles || {})
+	const localRules = Object.entries(localMayaiRulesToggles || {})
 		.map(([path, enabled]): [string, boolean] => [path, enabled as boolean])
 		.sort(([a], [b]) => a.localeCompare(b))
 
@@ -48,7 +48,7 @@ const ClineRulesToggleModal: React.FC = () => {
 	// Handle toggle rule
 	const toggleRule = (isGlobal: boolean, rulePath: string, enabled: boolean) => {
 		vscode.postMessage({
-			type: "toggleClineRule",
+			type: "toggleMayaiRule",
 			isGlobal,
 			rulePath,
 			enabled,
@@ -91,10 +91,10 @@ const ClineRulesToggleModal: React.FC = () => {
 	return (
 		<div ref={modalRef}>
 			<div ref={buttonRef} className="inline-flex min-w-0 max-w-full">
-				<Tooltip tipText="Manage Cline Rules" visible={isVisible ? false : undefined}>
+				<Tooltip tipText="Manage Mayai Rules" visible={isVisible ? false : undefined}>
 					<VSCodeButton
 						appearance="icon"
-						aria-label="Cline Rules"
+						aria-label="Mayai Rules"
 						onClick={() => setIsVisible(!isVisible)}
 						style={{ padding: "0px 0px", height: "20px" }}>
 						<div className="flex items-center gap-1 text-xs whitespace-nowrap min-w-0 w-full">
@@ -126,7 +126,7 @@ const ClineRulesToggleModal: React.FC = () => {
 					/>
 
 					<div className="flex justify-between items-center mb-2.5">
-						<div className="m-0 text-base font-semibold">Cline Rules</div>
+						<div className="m-0 text-base font-semibold">Mayai Rules</div>
 
 						<VSCodeButton
 							appearance="icon"
@@ -146,7 +146,7 @@ const ClineRulesToggleModal: React.FC = () => {
 							toggleRule={(rulePath, enabled) => toggleRule(true, rulePath, enabled)}
 							listGap="small"
 							isGlobal={true}
-							ruleType={"cline"}
+							ruleType={"mayai"}
 							showNewRule={true}
 							showNoRules={true}
 						/>
@@ -160,7 +160,7 @@ const ClineRulesToggleModal: React.FC = () => {
 							toggleRule={(rulePath, enabled) => toggleRule(false, rulePath, enabled)}
 							listGap="small"
 							isGlobal={false}
-							ruleType={"cline"}
+							ruleType={"mayai"}
 							showNewRule={false}
 							showNoRules={false}
 						/>
@@ -189,4 +189,4 @@ const ClineRulesToggleModal: React.FC = () => {
 	)
 }
 
-export default ClineRulesToggleModal
+export default MayaiRulesToggleModal

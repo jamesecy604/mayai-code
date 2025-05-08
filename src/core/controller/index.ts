@@ -16,7 +16,7 @@ import { handleFileServiceRequest } from "./file"
 import { selectImages } from "@integrations/misc/process-images"
 import { getTheme } from "@integrations/theme/getTheme"
 import WorkspaceTracker from "@integrations/workspace/WorkspaceTracker"
-import { ClineAccountService } from "@services/account/ClineAccountService"
+import { MayaiAccountService } from "@services/account/MayaiAccountService"
 import { BrowserSession } from "@services/browser/BrowserSession"
 import { McpHub } from "@services/mcp/McpHub"
 import { telemetryService } from "@/services/posthog/telemetry/TelemetryService"
@@ -46,9 +46,9 @@ import {
 	updateWorkspaceState,
 } from "../storage/state"
 import { Task, cwd } from "../task"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { MayaiRulesToggles } from "@shared/mayai-rules"
 import { sendStateUpdate } from "./state/subscribeToState"
-import { refreshClineRulesToggles } from "@core/context/instructions/user-instructions/cline-rules"
+import { refreshMayaiRulesToggles } from "@core/context/instructions/user-instructions/mayai-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 
 /*
@@ -64,7 +64,7 @@ export class Controller {
 	task?: Task
 	workspaceTracker: WorkspaceTracker
 	mcpHub: McpHub
-	accountService: ClineAccountService
+	accountService: MayaiAccountService
 	private latestAnnouncementId = "may-02-2025_16:27:00" // update to some unique identifier when we add a new announcement
 
 	constructor(
@@ -72,7 +72,7 @@ export class Controller {
 		private readonly outputChannel: vscode.OutputChannel,
 		postMessage: (message: ExtensionMessage) => Thenable<boolean> | undefined,
 	) {
-		this.outputChannel.appendLine("ClineProvider instantiated")
+		this.outputChannel.appendLine("MayaiProvider instantiated")
 		this.postMessage = postMessage
 
 		this.workspaceTracker = new WorkspaceTracker((msg) => this.postMessageToWebview(msg))
@@ -82,7 +82,7 @@ export class Controller {
 			(msg) => this.postMessageToWebview(msg),
 			this.context.extension?.packageJSON?.version ?? "1.0.0",
 		)
-		this.accountService = new ClineAccountService(
+		this.accountService = new MayaiAccountService(
 			(msg) => this.postMessageToWebview(msg),
 			async () => {
 				const { apiConfiguration } = await this.getStateToPostToWebview()
@@ -102,7 +102,7 @@ export class Controller {
 	- https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/src/extension.ts
 	*/
 	async dispose() {
-		this.outputChannel.appendLine("Disposing ClineProvider...")
+		this.outputChannel.appendLine("Disposing MayaiProvider...")
 		await this.clearTask()
 		this.outputChannel.appendLine("Cleared task")
 		while (this.disposables.length) {
@@ -125,7 +125,7 @@ export class Controller {
 			await updateGlobalState(this.context, "userInfo", undefined)
 			await updateGlobalState(this.context, "apiProvider", "openrouter")
 			await this.postStateToWebview()
-			vscode.window.showInformationMessage("Successfully logged out of Cline")
+			vscode.window.showInformationMessage("Successfully logged out of Mayai")
 		} catch (error) {
 			vscode.window.showErrorMessage("Logout failed")
 		}
@@ -267,7 +267,7 @@ export class Controller {
 				// You can send any JSON serializable data.
 				// Could also do this in extension .ts
 				//this.postMessageToWebview({ type: "text", text: `Extension: ${Date.now()}` })
-				// initializing new instance of Cline will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
+				// initializing new instance of Mayai will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
 				await this.initTask(message.text, message.images)
 				break
 			case "condense":
@@ -341,8 +341,8 @@ export class Controller {
 				const openAiModels = await this.getOpenAiModels(apiConfiguration.openAiBaseUrl, apiConfiguration.openAiApiKey)
 				this.postMessageToWebview({ type: "openAiModels", openAiModels })
 				break
-			case "refreshClineRules":
-				await refreshClineRulesToggles(this.context, cwd)
+			case "refreshMayaiRules":
+				await refreshMayaiRulesToggles(this.context, cwd)
 				await refreshExternalRulesToggles(this.context, cwd)
 				await this.postStateToWebview()
 				break
@@ -410,7 +410,7 @@ export class Controller {
 				break
 			// case "openMcpMarketplaceServerDetails": {
 			// 	if (message.text) {
-			// 		const response = await fetch(`https://api.cline.bot/v1/mcp/marketplace/item?mcpId=${message.mcpId}`)
+			// 		const response = await fetch(`https://api.mayai.bot/v1/mcp/marketplace/item?mcpId=${message.mcpId}`)
 			// 		const details: McpDownloadResponse = await response.json()
 
 			// 		if (details.readmeContent) {
@@ -458,23 +458,23 @@ export class Controller {
 				}
 				break
 			}
-			case "toggleClineRule": {
+			case "toggleMayaiRule": {
 				const { isGlobal, rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean" && typeof isGlobal === "boolean") {
 					if (isGlobal) {
 						const toggles =
-							((await getGlobalState(this.context, "globalClineRulesToggles")) as ClineRulesToggles) || {}
+							((await getGlobalState(this.context, "globalMayaiRulesToggles")) as MayaiRulesToggles) || {}
 						toggles[rulePath] = enabled
-						await updateGlobalState(this.context, "globalClineRulesToggles", toggles)
+						await updateGlobalState(this.context, "globalMayaiRulesToggles", toggles)
 					} else {
 						const toggles =
-							((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+							((await getWorkspaceState(this.context, "localMayaiRulesToggles")) as MayaiRulesToggles) || {}
 						toggles[rulePath] = enabled
-						await updateWorkspaceState(this.context, "localClineRulesToggles", toggles)
+						await updateWorkspaceState(this.context, "localMayaiRulesToggles", toggles)
 					}
 					await this.postStateToWebview()
 				} else {
-					console.error("toggleClineRule: Missing or invalid parameters", {
+					console.error("toggleMayaiRule: Missing or invalid parameters", {
 						rulePath,
 						isGlobal: typeof isGlobal === "boolean" ? isGlobal : `Invalid: ${typeof isGlobal}`,
 						enabled: typeof enabled === "boolean" ? enabled : `Invalid: ${typeof enabled}`,
@@ -486,7 +486,7 @@ export class Controller {
 				const { rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean") {
 					const toggles =
-						((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+						((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as MayaiRulesToggles) || {}
 					toggles[rulePath] = enabled
 					await updateWorkspaceState(this.context, "localWindsurfRulesToggles", toggles)
 					await this.postStateToWebview()
@@ -499,7 +499,7 @@ export class Controller {
 				const { rulePath, enabled } = message
 				if (rulePath && typeof enabled === "boolean") {
 					const toggles =
-						((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+						((await getWorkspaceState(this.context, "localCursorRulesToggles")) as MayaiRulesToggles) || {}
 					toggles[rulePath] = enabled
 					await updateWorkspaceState(this.context, "localCursorRulesToggles", toggles)
 					await this.postStateToWebview()
@@ -729,7 +729,7 @@ export class Controller {
 					)
 					break
 				case "openrouter":
-				case "cline":
+				case "mayai":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.openRouterModelId)
 					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.openRouterModelInfo)
 					break
@@ -788,7 +788,7 @@ export class Controller {
 						await updateGlobalState(this.context, "awsBedrockCustomModelBaseId", newAwsBedrockCustomModelBaseId)
 						break
 					case "openrouter":
-					case "cline":
+					case "mayai":
 						await updateGlobalState(this.context, "openRouterModelId", newModelId)
 						await updateGlobalState(this.context, "openRouterModelInfo", newModelInfo)
 						break
@@ -862,11 +862,11 @@ export class Controller {
 				console.error("Failed to abort task")
 			})
 			if (this.task) {
-				// 'abandoned' will prevent this cline instance from affecting future cline instance gui. this may happen if its hanging on a streaming request
+				// 'abandoned' will prevent this mayai instance from affecting future mayai instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
 			await this.initTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
-			// await this.postStateToWebview() // new Cline instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
+			// await this.postStateToWebview() // new Mayai instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
 
@@ -914,14 +914,14 @@ export class Controller {
 				customToken,
 			})
 
-			const clineProvider: ApiProvider = "cline"
-			await updateGlobalState(this.context, "apiProvider", clineProvider)
+			const mayaiProvider: ApiProvider = "mayai"
+			await updateGlobalState(this.context, "apiProvider", mayaiProvider)
 
 			// Update API configuration with the new provider and API key
 			const { apiConfiguration } = await getAllExtensionState(this.context)
 			const updatedConfig = {
 				...apiConfiguration,
-				apiProvider: clineProvider,
+				apiProvider: mayaiProvider,
 				clineApiKey: apiKey,
 			}
 
@@ -930,10 +930,10 @@ export class Controller {
 			}
 
 			await this.postStateToWebview()
-			// vscode.window.showInformationMessage("Successfully logged in to Cline")
+			// vscode.window.showInformationMessage("Successfully logged in to Mayai")
 		} catch (error) {
 			console.error("Failed to handle auth callback:", error)
-			vscode.window.showErrorMessage("Failed to log in to Cline")
+			vscode.window.showErrorMessage("Failed to log in to Mayai")
 			// Even on login failure, we preserve any existing tokens
 			// Only clear tokens on explicit logout
 		}
@@ -943,7 +943,7 @@ export class Controller {
 
 	private async fetchMcpMarketplaceFromApi(silent: boolean = false): Promise<McpMarketplaceCatalog | undefined> {
 		try {
-			const response = await axios.get("https://api.cline.bot/v1/mcp/marketplace", {
+			const response = await axios.get("https://api.mayai.bot/v1/mcp/marketplace", {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -1037,7 +1037,7 @@ export class Controller {
 
 			// Fetch server details from marketplace
 			const response = await axios.post<McpDownloadResponse>(
-				"https://api.cline.bot/v1/mcp/download",
+				"https://api.mayai.bot/v1/mcp/download",
 				{ mcpId },
 				{
 					headers: { "Content-Type": "application/json" },
@@ -1070,9 +1070,9 @@ export class Controller {
 			// Create task with context from README and added guidelines for MCP server installation
 			const task = `Set up the MCP server from ${mcpDetails.githubUrl} while adhering to these MCP server installation rules:
 - Start by loading the MCP documentation.
-- Use "${mcpDetails.mcpId}" as the server name in cline_mcp_settings.json.
+- Use "${mcpDetails.mcpId}" as the server name in mayai_mcp_settings.json.
 - Create the directory for the new MCP server before starting installation.
-- Make sure you read the user's existing cline_mcp_settings.json file before editing it with this new mcp, to not overwrite any existing servers.
+- Make sure you read the user's existing mayai_mcp_settings.json file before editing it with this new mcp, to not overwrite any existing servers.
 - Use commands aligned with the user's shell and operating system best practices.
 - The following README may contain instructions that conflict with the user's OS, in which case proceed thoughtfully.
 - Once installed, demonstrate the server's capabilities by using one of its tools.
@@ -1375,7 +1375,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		return "@/" + relativePath
 	}
 
-	// 'Add to Cline' context menu in editor and code action
+	// 'Add to Mayai' context menu in editor and code action
 	async addSelectedCodeToChat(code: string, filePath: string, languageId: string, diagnostics?: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
@@ -1398,7 +1398,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		console.log("addSelectedCodeToChat", code, filePath, languageId)
 	}
 
-	// 'Add to Cline' context menu in Terminal
+	// 'Add to Mayai' context menu in Terminal
 	async addSelectedTerminalOutputToChat(output: string, terminalName: string) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
@@ -1419,8 +1419,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		console.log("addSelectedTerminalOutputToChat", output, terminalName)
 	}
 
-	// 'Fix with Cline' in code actions
-	async fixWithCline(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
+	// 'Fix with Mayai' in code actions
+	async fixWithMayai(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
 		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
 		await setTimeoutPromise(100)
@@ -1429,7 +1429,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 		const problemsString = this.convertDiagnosticsToProblemsString(diagnostics)
 		await this.initTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
 
-		console.log("fixWithCline", code, filePath, languageId, diagnostics, problemsString)
+		console.log("fixWithMayai", code, filePath, languageId, diagnostics, problemsString)
 	}
 
 	convertDiagnosticsToProblemsString(diagnostics: vscode.Diagnostic[]) {
@@ -1626,18 +1626,18 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			mcpMarketplaceEnabled,
 			telemetrySetting,
 			planActSeparateModelsSetting,
-			globalClineRulesToggles,
+			globalMayaiRulesToggles,
 			shellIntegrationTimeout,
 		} = await getAllExtensionState(this.context)
 
-		const localClineRulesToggles =
-			((await getWorkspaceState(this.context, "localClineRulesToggles")) as ClineRulesToggles) || {}
+		const localMayaiRulesToggles =
+			((await getWorkspaceState(this.context, "localMayaiRulesToggles")) as MayaiRulesToggles) || {}
 
 		const localWindsurfRulesToggles =
-			((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as ClineRulesToggles) || {}
+			((await getWorkspaceState(this.context, "localWindsurfRulesToggles")) as MayaiRulesToggles) || {}
 
 		const localCursorRulesToggles =
-			((await getWorkspaceState(this.context, "localCursorRulesToggles")) as ClineRulesToggles) || {}
+			((await getWorkspaceState(this.context, "localCursorRulesToggles")) as MayaiRulesToggles) || {}
 
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -1646,7 +1646,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			uriScheme: vscode.env.uriScheme,
 			currentTaskItem: this.task?.taskId ? (taskHistory || []).find((item) => item.id === this.task?.taskId) : undefined,
 			checkpointTrackerErrorMessage: this.task?.checkpointTrackerErrorMessage,
-			clineMessages: this.task?.clineMessages || [],
+			mayaiMessages: this.task?.mayaiMessages || [],
 			taskHistory: (taskHistory || [])
 				.filter((item) => item.ts && item.task)
 				.sort((a, b) => b.ts - a.ts)
@@ -1661,8 +1661,8 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 			telemetrySetting,
 			planActSeparateModelsSetting,
 			vscMachineId: vscode.env.machineId,
-			globalClineRulesToggles: globalClineRulesToggles || {},
-			localClineRulesToggles: localClineRulesToggles || {},
+			globalMayaiRulesToggles: globalMayaiRulesToggles || {},
+			localMayaiRulesToggles: localMayaiRulesToggles || {},
 			localWindsurfRulesToggles: localWindsurfRulesToggles || {},
 			localCursorRulesToggles: localCursorRulesToggles || {},
 			shellIntegrationTimeout,
@@ -1680,12 +1680,12 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// Caching mechanism to keep track of webview messages + API conversation history per provider instance
 
 	/*
-	Now that we use retainContextWhenHidden, we don't have to store a cache of cline messages in the user's state, but we could to reduce memory footprint in long conversations.
+	Now that we use retainContextWhenHidden, we don't have to store a cache of mayai messages in the user's state, but we could to reduce memory footprint in long conversations.
 
-	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached cline messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
+	- We have to be careful of what state is shared between MayaiProvider instances since there could be multiple instances of the extension running at once. For example when we cached mayai messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
 	- Some state does need to be shared between the instances, i.e. the API key--however there doesn't seem to be a good way to notify the other instances that the API key has changed.
 
-	We need to use a unique identifier for each ClineProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.
+	We need to use a unique identifier for each MayaiProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.
 
 	// conversation history to send in API requests
 

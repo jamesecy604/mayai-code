@@ -2,9 +2,9 @@
 export interface FileMetadataEntry {
 	path: string
 	record_state: "active" | "stale"
-	record_source: "read_tool" | "user_edited" | "cline_edited" | "file_mentioned"
-	cline_read_date: number | null
-	cline_edit_date: number | null
+	record_source: "read_tool" | "user_edited" | "mayai_edited" | "file_mentioned"
+	mayai_read_date: number | null
+	mayai_edit_date: number | null
 	user_edit_date?: number | null
 }
 

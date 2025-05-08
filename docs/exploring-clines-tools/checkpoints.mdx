@@ -12,13 +12,13 @@ Checkpoints automatically save snapshots of your workspace after each step in a 
 
 ### ⚙️ How Checkpoints Work
 
-Cline creates a checkpoint after each tool use (file edits, commands, etc.). These checkpoints:
+Mayai creates a checkpoint after each tool use (file edits, commands, etc.). These checkpoints:
 
 - Work alongside your Git workflow without interference
 - Maintain context between restores
 - Use a shadow Git repository to track changes
 
-For example, if you're working on a feature and Cline makes multiple file changes, each change creates a checkpoint. This means you can review each modification and, if needed, roll back to any point without affecting your main Git repository.
+For example, if you're working on a feature and Mayai makes multiple file changes, each change creates a checkpoint. This means you can review each modification and, if needed, roll back to any point without affecting your main Git repository.
 
 #### Viewing Changes & Restoring to Checkpoint
 
@@ -29,7 +29,7 @@ After each tool use, you can:
 
 <Frame>
 	<img
-		src="https://storage.googleapis.com/cline_public_images/docs/assets/image%20(13).png"
+		src="https://storage.googleapis.com/mayai_public_images/docs/assets/image%20(13).png"
 		alt="Checkpoint comparison and restore options"
 	/>
 </Frame>
@@ -44,11 +44,11 @@ To restore to a previous point:
     - **Restore Task Only**: Keep codebase changes but revert task context
     - **Restore Workspace Only**: Reset codebase while preserving task context
 
-Example: If Cline makes changes you don't like while styling a component, you can use "Restore Workspace Only" to revert the code changes while keeping the conversation context, allowing you to try a different approach.
+Example: If Mayai makes changes you don't like while styling a component, you can use "Restore Workspace Only" to revert the code changes while keeping the conversation context, allowing you to try a different approach.
 
 ### 💡 Use Cases
 
-Checkpoints let you be more experimental with Cline. While human coding is often methodical and iterative, AI can make substantial changes quickly. Checkpoints help you track these changes and revert if needed.
+Checkpoints let you be more experimental with Mayai. While human coding is often methodical and iterative, AI can make substantial changes quickly. Checkpoints help you track these changes and revert if needed.
 
 #### 1. Using Auto-Approve Mode
 
@@ -62,8 +62,8 @@ Checkpoints let you be more experimental with Cline. While human coding is often
 - Quickly revert to working states
 - Ideal for exploring different design patterns or architectural approaches
 
-<Frame caption="In this case, I didn't like the changes Cline made to my robot dog-walking website (still working on the robots) and I wanted to revert both the codebase and the task to before any changes were made so I could start fresh.">
-	<img src="https://storage.googleapis.com/cline_public_images/docs/assets/checkpointsDemo.gif" alt="Checkpoint restore demo" />
+<Frame caption="In this case, I didn't like the changes Mayai made to my robot dog-walking website (still working on the robots) and I wanted to revert both the codebase and the task to before any changes were made so I could start fresh.">
+	<img src="https://storage.googleapis.com/mayai_public_images/docs/assets/checkpointsDemo.gif" alt="Checkpoint restore demo" />
 </Frame>
 
 ### ✨ Best Practices
@@ -76,7 +76,7 @@ Checkpoints let you be more experimental with Cline. While human coding is often
     - Use "Restore Task Only" to try different prompts, but leave all files as they exist
     - Use "Restore Workspace Only" to attempt different implementations, or prune context from the task
 
-🛟 Checkpoints are your safety net when working with Cline, enabling you to experiment freely while maintaining full control over your codebase. Whether you're refactoring a complex component, trying different implementation approaches, or using auto-approve mode for rapid development, checkpoints ensure you can always review changes and roll back if needed.
+🛟 Checkpoints are your safety net when working with Mayai, enabling you to experiment freely while maintaining full control over your codebase. Whether you're refactoring a complex component, trying different implementation approaches, or using auto-approve mode for rapid development, checkpoints ensure you can always review changes and roll back if needed.
 
 #### 🗑️ Deleting Checkpoints
 
@@ -86,7 +86,7 @@ You can delete all checkpoints by using the **"Delete All History"** button in t
 
 ## Editing Messages
 
-Cline allows you to edit chat messages in a task after they've been submitted (with the exception of the message that started the task).
+Mayai allows you to edit chat messages in a task after they've been submitted (with the exception of the message that started the task).
 
 Perhaps you didn't get the results you wanted, thought of a better way to phrase your request, or need to add more information. Editing your message allows you to re-submit a request without starting over or restoring your files or workspace with checkpoints. There are two Restore options:
 
@@ -97,7 +97,7 @@ Perhaps you didn't get the results you wanted, thought of a better way to phrase
 **Interactive Editing:**
 
 - Messages can be clicked to enter edit mode
-- Cline automatically selects all text when entering edit mode
+- Mayai automatically selects all text when entering edit mode
 
 **Keyboard Shortcuts:**
 
@@ -108,7 +108,7 @@ Perhaps you didn't get the results you wanted, thought of a better way to phrase
 
 <Frame>
 	<img
-		src="https://storage.googleapis.com/cline_public_images/docs/assets/message-editing.png"
+		src="https://storage.googleapis.com/mayai_public_images/docs/assets/message-editing.png"
 		alt="Message editing interface"
 	/>
 </Frame>

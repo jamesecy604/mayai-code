@@ -60,7 +60,7 @@ export const ExtensionStateContextProvider: React.FC<{
 
 	const [state, setState] = useState<ExtensionState>({
 		version: "",
-		clineMessages: [],
+		mayaiMessages: [],
 		taskHistory: [],
 		shouldShowAnnouncement: false,
 		autoApprovalSettings: DEFAULT_AUTO_APPROVAL_SETTINGS,
@@ -70,8 +70,8 @@ export const ExtensionStateContextProvider: React.FC<{
 		telemetrySetting: "unset",
 		vscMachineId: "",
 		planActSeparateModelsSetting: true,
-		globalClineRulesToggles: {},
-		localClineRulesToggles: {},
+		globalMayaiRulesToggles: {},
+		localMayaiRulesToggles: {},
 		localCursorRulesToggles: {},
 		localWindsurfRulesToggles: {},
 		shellIntegrationTimeout: 4000, // default timeout for shell integration
@@ -108,11 +108,11 @@ export const ExtensionStateContextProvider: React.FC<{
 				const partialMessage = message.partialMessage!
 				setState((prevState) => {
 					// worth noting it will never be possible for a more up-to-date message to be sent here or in normal messages post since the presentAssistantContent function uses lock
-					const lastIndex = findLastIndex(prevState.clineMessages, (msg) => msg.ts === partialMessage.ts)
+					const lastIndex = findLastIndex(prevState.mayaiMessages, (msg) => msg.ts === partialMessage.ts)
 					if (lastIndex !== -1) {
-						const newClineMessages = [...prevState.clineMessages]
-						newClineMessages[lastIndex] = partialMessage
-						return { ...prevState, clineMessages: newClineMessages }
+						const newMayaiMessages = [...prevState.mayaiMessages]
+						newMayaiMessages[lastIndex] = partialMessage
+						return { ...prevState, mayaiMessages: newMayaiMessages }
 					}
 					return prevState
 				})
@@ -264,8 +264,8 @@ export const ExtensionStateContextProvider: React.FC<{
 		totalTasksSize,
 		showMcp,
 		mcpTab,
-		globalClineRulesToggles: state.globalClineRulesToggles || {},
-		localClineRulesToggles: state.localClineRulesToggles || {},
+		globalMayaiRulesToggles: state.globalMayaiRulesToggles || {},
+		localMayaiRulesToggles: state.localMayaiRulesToggles || {},
 		localCursorRulesToggles: state.localCursorRulesToggles || {},
 		localWindsurfRulesToggles: state.localWindsurfRulesToggles || {},
 		setApiConfiguration: (value) =>

@@ -3,10 +3,10 @@ import { memo, useEffect, useState } from "react"
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext"
 import { vscode } from "@/utils/vscode"
 import VSCodeButtonLink from "../common/VSCodeButtonLink"
-import ClineLogoWhite from "../../assets/ClineLogoWhite"
+import MayaiLogoWhite from "../../assets/MayaiLogoWhite"
 import CountUp from "react-countup"
 import CreditsHistoryTable from "./CreditsHistoryTable"
-import { UsageTransaction, PaymentTransaction } from "@shared/ClineAccount"
+import { UsageTransaction, PaymentTransaction } from "@shared/MayaiAccount"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { AccountServiceClient } from "@/services/grpc-client"
 import { EmptyRequest } from "@shared/proto/common"
@@ -24,14 +24,14 @@ const AccountView = ({ onDone }: AccountViewProps) => {
 			</div>
 			<div className="flex-grow overflow-hidden pr-[8px] flex flex-col">
 				<div className="h-full mb-[5px]">
-					<ClineAccountView />
+					<MayaiAccountView />
 				</div>
 			</div>
 		</div>
 	)
 }
 
-export const ClineAccountView = () => {
+export const MayaiAccountView = () => {
 	const { user: firebaseUser, handleSignOut } = useFirebaseAuth()
 	const { userInfo, apiConfiguration } = useExtensionState()
 
@@ -111,7 +111,7 @@ export const ClineAccountView = () => {
 
 					<div className="w-full flex gap-2 flex-col min-[225px]:flex-row">
 						<div className="w-full min-[225px]:w-1/2">
-							<VSCodeButtonLink href="https://app.cline.bot/credits" appearance="primary" className="w-full">
+							<VSCodeButtonLink href="https://app.mayai.bot/credits" appearance="primary" className="w-full">
 								Dashboard
 							</VSCodeButtonLink>
 						</div>
@@ -143,7 +143,7 @@ export const ClineAccountView = () => {
 						</div>
 
 						<div className="w-full">
-							<VSCodeButtonLink href="https://app.cline.bot/credits/#buy" className="w-full">
+							<VSCodeButtonLink href="https://app.mayai.bot/credits/#buy" className="w-full">
 								Add Credits
 							</VSCodeButtonLink>
 						</div>
@@ -157,7 +157,7 @@ export const ClineAccountView = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center pr-3">
-					<ClineLogoWhite className="size-16 mb-4" />
+					<MayaiLogoWhite className="size-16 mb-4" />
 
 					<p style={{}}>
 						Sign up for an account to get access to the latest models, billing dashboard to view usage and credits,
@@ -165,12 +165,12 @@ export const ClineAccountView = () => {
 					</p>
 
 					<VSCodeButton onClick={handleLogin} className="w-full mb-4">
-						Sign up with Cline
+						Sign up with Mayai
 					</VSCodeButton>
 
 					<p className="text-[var(--vscode-descriptionForeground)] text-xs text-center m-0">
-						By continuing, you agree to the <VSCodeLink href="https://cline.bot/tos">Terms of Service</VSCodeLink> and{" "}
-						<VSCodeLink href="https://cline.bot/privacy">Privacy Policy.</VSCodeLink>
+						By continuing, you agree to the <VSCodeLink href="https://mayai.bot/tos">Terms of Service</VSCodeLink> and{" "}
+						<VSCodeLink href="https://mayai.bot/privacy">Privacy Policy.</VSCodeLink>
 					</p>
 				</div>
 			)}

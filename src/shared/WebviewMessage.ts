@@ -23,7 +23,7 @@ export interface WebviewMessage {
 		| "refreshOpenRouterModels"
 		| "refreshRequestyModels"
 		| "refreshOpenAiModels"
-		| "refreshClineRules"
+		| "refreshMayaiRules"
 		| "openMcpSettings"
 		| "restartMcpServer"
 		| "deleteMcpServer"
@@ -59,10 +59,10 @@ export interface WebviewMessage {
 		| "toggleFavoriteModel"
 		| "grpc_request"
 		| "grpc_request_cancel"
-		| "toggleClineRule"
+		| "toggleMayaiRule"
 		| "toggleCursorRule"
 		| "toggleWindsurfRule"
-		| "deleteClineRule"
+		| "deleteMayaiRule"
 		| "copyToClipboard"
 		| "updateTerminalConnectionTimeout"
 		| "setActiveQuote"
@@ -70,7 +70,7 @@ export interface WebviewMessage {
 	// | "relaunchChromeDebugMode"
 	text?: string
 	disabled?: boolean
-	askResponse?: ClineAskResponse
+	askResponse?: MayaiAskResponse
 	apiConfiguration?: ApiConfiguration
 	images?: string[]
 	bool?: boolean
@@ -112,7 +112,7 @@ export interface WebviewMessage {
 	grpc_request_cancel?: {
 		request_id: string // ID of the request to cancel
 	}
-	// For cline rules
+	// For mayai rules
 	isGlobal?: boolean
 	rulePath?: string
 	enabled?: boolean
@@ -122,8 +122,8 @@ export interface WebviewMessage {
 	shellIntegrationTimeout?: number
 }
 
-export type ClineAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"
+export type MayaiAskResponse = "yesButtonClicked" | "noButtonClicked" | "messageResponse"
 
-export type ClineCheckpointRestore = "task" | "workspace" | "taskAndWorkspace"
+export type MayaiCheckpointRestore = "task" | "workspace" | "taskAndWorkspace"
 
 export type TaskFeedbackType = "thumbs_up" | "thumbs_down"

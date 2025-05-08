@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "mayai"
 
 export interface IsImageUrl {
 	isImage: boolean
@@ -94,7 +94,7 @@ export const IsImageUrl: MessageFns<IsImageUrl> = {
 export type WebServiceDefinition = typeof WebServiceDefinition
 export const WebServiceDefinition = {
 	name: "WebService",
-	fullName: "cline.WebService",
+	fullName: "mayai.WebService",
 	methods: {
 		checkIsImageUrl: {
 			name: "checkIsImageUrl",

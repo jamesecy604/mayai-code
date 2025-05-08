@@ -5,11 +5,11 @@ import { useDeepCompareEffect, useEvent, useMount } from "react-use"
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso"
 import styled from "styled-components"
 import {
-	ClineApiReqInfo,
-	ClineAsk,
-	ClineMessage,
-	ClineSayBrowserAction,
-	ClineSayTool,
+	MayaiApiReqInfo,
+	MayaiAsk,
+	MayaiMessage,
+	MayaiSayBrowserAction,
+	MayaiSayTool,
 	ExtensionMessage,
 } from "@shared/ExtensionMessage"
 import { findLast } from "@shared/array"
@@ -89,18 +89,18 @@ async function convertHtmlToMarkdown(html: string) {
 export const MAX_IMAGES_PER_MESSAGE = 20 // Anthropic limits to 20 images
 
 const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryView }: ChatViewProps) => {
-	const { version, clineMessages: messages, taskHistory, apiConfiguration, telemetrySetting } = useExtensionState()
+	const { version, mayaiMessages: messages, taskHistory, apiConfiguration, telemetrySetting } = useExtensionState()
 
 	//const task = messages.length > 0 ? (messages[0].say === "task" ? messages[0] : undefined) : undefined) : undefined
-	const task = useMemo(() => messages.at(0), [messages]) // leaving this less safe version here since if the first message is not a task, then the extension is in a bad state and needs to be debugged (see Cline.abort)
+	const task = useMemo(() => messages.at(0), [messages]) // leaving this less safe version here since if the first message is not a task, then the extension is in a bad state and needs to be debugged (see Mayai.abort)
 	const modifiedMessages = useMemo(() => combineApiRequests(combineCommandSequences(messages.slice(1))), [messages])
 	// has to be after api_req_finished are all reduced into api_req_started messages
 	const apiMetrics = useMemo(() => getApiMetrics(modifiedMessages), [modifiedMessages])
 
 	const lastApiReqTotalTokens = useMemo(() => {
-		const getTotalTokensFromApiReqMessage = (msg: ClineMessage) => {
+		const getTotalTokensFromApiReqMessage = (msg: MayaiMessage) => {
 			if (!msg.text) return 0
-			const { tokensIn, tokensOut, cacheWrites, cacheReads }: ClineApiReqInfo = JSON.parse(msg.text)
+			const { tokensIn, tokensOut, cacheWrites, cacheReads }: MayaiApiReqInfo = JSON.parse(msg.text)
 			return (tokensIn || 0) + (tokensOut || 0) + (cacheWrites || 0) + (cacheReads || 0)
 		}
 		const lastApiReqMessage = findLast(modifiedMessages, (msg) => {
@@ -119,7 +119,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	const [selectedImages, setSelectedImages] = useState<string[]>([])
 
 	// we need to hold on to the ask because useEffect > lastMessage will always let us know when an ask comes in and handle it, but by the time handleMessage is called, the last message might not be the ask anymore (it could be a say that followed)
-	const [clineAsk, setClineAsk] = useState<ClineAsk | undefined>(undefined)
+	const [mayaiAsk, setMayaiAsk] = useState<MayaiAsk | undefined>(undefined)
 	const [enableButtons, setEnableButtons] = useState<boolean>(false)
 	const [primaryButtonText, setPrimaryButtonText] = useState<string | undefined>("Approve")
 	const [secondaryButtonText, setSecondaryButtonText] = useState<string | undefined>("Reject")
@@ -172,44 +172,44 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					switch (lastMessage.ask) {
 						case "api_req_failed":
 							setSendingDisabled(true)
-							setClineAsk("api_req_failed")
+							setMayaiAsk("api_req_failed")
 							setEnableButtons(true)
 							setPrimaryButtonText("Retry")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "mistake_limit_reached":
 							setSendingDisabled(false)
-							setClineAsk("mistake_limit_reached")
+							setMayaiAsk("mistake_limit_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed Anyways")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "auto_approval_max_req_reached":
 							setSendingDisabled(true)
-							setClineAsk("auto_approval_max_req_reached")
+							setMayaiAsk("auto_approval_max_req_reached")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed")
 							setSecondaryButtonText("Start New Task")
 							break
 						case "followup":
 							setSendingDisabled(isPartial)
-							setClineAsk("followup")
+							setMayaiAsk("followup")
 							setEnableButtons(false)
 							// setPrimaryButtonText(undefined)
 							// setSecondaryButtonText(undefined)
 							break
 						case "plan_mode_respond":
 							setSendingDisabled(isPartial)
-							setClineAsk("plan_mode_respond")
+							setMayaiAsk("plan_mode_respond")
 							setEnableButtons(false)
 							// setPrimaryButtonText(undefined)
 							// setSecondaryButtonText(undefined)
 							break
 						case "tool":
 							setSendingDisabled(isPartial)
-							setClineAsk("tool")
+							setMayaiAsk("tool")
 							setEnableButtons(!isPartial)
-							const tool = JSON.parse(lastMessage.text || "{}") as ClineSayTool
+							const tool = JSON.parse(lastMessage.text || "{}") as MayaiSayTool
 							switch (tool.tool) {
 								case "editedExistingFile":
 								case "newFileCreated":
@@ -224,28 +224,28 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							break
 						case "browser_action_launch":
 							setSendingDisabled(isPartial)
-							setClineAsk("browser_action_launch")
+							setMayaiAsk("browser_action_launch")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
 							break
 						case "command":
 							setSendingDisabled(isPartial)
-							setClineAsk("command")
+							setMayaiAsk("command")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Run Command")
 							setSecondaryButtonText("Reject")
 							break
 						case "command_output":
 							setSendingDisabled(false)
-							setClineAsk("command_output")
+							setMayaiAsk("command_output")
 							setEnableButtons(true)
 							setPrimaryButtonText("Proceed While Running")
 							setSecondaryButtonText(undefined)
 							break
 						case "use_mcp_server":
 							setSendingDisabled(isPartial)
-							setClineAsk("use_mcp_server")
+							setMayaiAsk("use_mcp_server")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Approve")
 							setSecondaryButtonText("Reject")
@@ -253,14 +253,14 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						case "completion_result":
 							// extension waiting for feedback. but we can just present a new task button
 							setSendingDisabled(isPartial)
-							setClineAsk("completion_result")
+							setMayaiAsk("completion_result")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
 							break
 						case "resume_task":
 							setSendingDisabled(false)
-							setClineAsk("resume_task")
+							setMayaiAsk("resume_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Resume Task")
 							setSecondaryButtonText(undefined)
@@ -268,7 +268,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							break
 						case "resume_completed_task":
 							setSendingDisabled(false)
-							setClineAsk("resume_completed_task")
+							setMayaiAsk("resume_completed_task")
 							setEnableButtons(true)
 							setPrimaryButtonText("Start New Task")
 							setSecondaryButtonText(undefined)
@@ -276,14 +276,14 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							break
 						case "new_task":
 							setSendingDisabled(isPartial)
-							setClineAsk("new_task")
+							setMayaiAsk("new_task")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Start New Task with Context")
 							setSecondaryButtonText(undefined)
 							break
 						case "condense":
 							setSendingDisabled(isPartial)
-							setClineAsk("condense")
+							setMayaiAsk("condense")
 							setEnableButtons(!isPartial)
 							setPrimaryButtonText("Condense Conversation")
 							setSecondaryButtonText(undefined)
@@ -299,7 +299,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 								setInputValue("")
 								setSendingDisabled(true)
 								setSelectedImages([])
-								setClineAsk(undefined)
+								setMayaiAsk(undefined)
 								setEnableButtons(false)
 							}
 							break
@@ -326,7 +326,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 			// this would get called after sending the first message, so we have to watch messages.length instead
 			// No messages, so user has to submit a task
 			// setTextAreaDisabled(false)
-			// setClineAsk(undefined)
+			// setMayaiAsk(undefined)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 		}
@@ -335,7 +335,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	useEffect(() => {
 		if (messages.length === 0) {
 			setSendingDisabled(false)
-			setClineAsk(undefined)
+			setMayaiAsk(undefined)
 			setEnableButtons(false)
 			setPrimaryButtonText("Approve")
 			setSecondaryButtonText("Reject")
@@ -347,8 +347,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}, [task?.ts])
 
 	const isStreaming = useMemo(() => {
-		const isLastAsk = !!modifiedMessages.at(-1)?.ask // checking clineAsk isn't enough since messages effect may be called again for a tool for example, set clineAsk to its value, and if the next message is not an ask then it doesn't reset. This is likely due to how much more often we're updating messages as compared to before, and should be resolved with optimizations as it's likely a rendering bug. but as a final guard for now, the cancel button will show if the last message is not an ask
-		const isToolCurrentlyAsking = isLastAsk && clineAsk !== undefined && enableButtons && primaryButtonText !== undefined
+		const isLastAsk = !!modifiedMessages.at(-1)?.ask // checking mayaiAsk isn't enough since messages effect may be called again for a tool for example, set mayaiAsk to its value, and if the next message is not an ask then it doesn't reset. This is likely due to how much more often we're updating messages as compared to before, and should be resolved with optimizations as it's likely a rendering bug. but as a final guard for now, the cancel button will show if the last message is not an ask
+		const isToolCurrentlyAsking = isLastAsk && mayaiAsk !== undefined && enableButtons && primaryButtonText !== undefined
 		if (isToolCurrentlyAsking) {
 			return false
 		}
@@ -368,7 +368,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		}
 
 		return false
-	}, [modifiedMessages, clineAsk, enableButtons, primaryButtonText])
+	}, [modifiedMessages, mayaiAsk, enableButtons, primaryButtonText])
 
 	const handleSendMessage = useCallback(
 		async (text: string, images: string[]) => {
@@ -387,8 +387,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				console.log("[ChatView] handleSendMessage - Sending message:", messageToSend)
 				if (messages.length === 0) {
 					await TaskServiceClient.newTask({ text: messageToSend, images })
-				} else if (clineAsk) {
-					switch (clineAsk) {
+				} else if (mayaiAsk) {
+					switch (mayaiAsk) {
 						case "followup":
 						case "plan_mode_respond":
 						case "tool":
@@ -423,14 +423,14 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				setActiveQuote(null) // Clear quote when sending message
 				setSendingDisabled(true)
 				setSelectedImages([])
-				setClineAsk(undefined)
+				setMayaiAsk(undefined)
 				setEnableButtons(false)
 				// setPrimaryButtonText(undefined)
 				// setSecondaryButtonText(undefined)
 				disableAutoScrollRef.current = false
 			}
 		},
-		[messages.length, clineAsk, activeQuote],
+		[messages.length, mayaiAsk, activeQuote],
 	)
 
 	const startNewTask = useCallback(async () => {
@@ -439,12 +439,12 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}, [])
 
 	/*
-	This logic depends on the useEffect[messages] above to set clineAsk, after which buttons are shown and we then send an askResponse to the extension.
+	This logic depends on the useEffect[messages] above to set mayaiAsk, after which buttons are shown and we then send an askResponse to the extension.
 	*/
 	const handlePrimaryButtonClick = useCallback(
 		async (text?: string, images?: string[]) => {
 			const trimmedInput = text?.trim()
-			switch (clineAsk) {
+			switch (mayaiAsk) {
 				case "api_req_failed":
 				case "command":
 				case "command_output":
@@ -478,7 +478,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					startNewTask()
 					break
 				case "new_task":
-					console.info("new task button clicked!", { lastMessage, messages, clineAsk, text })
+					console.info("new task button clicked!", { lastMessage, messages, mayaiAsk, text })
 					await TaskServiceClient.newTask({
 						text: lastMessage?.text,
 						images: [],
@@ -492,13 +492,13 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					break
 			}
 			setSendingDisabled(true)
-			setClineAsk(undefined)
+			setMayaiAsk(undefined)
 			setEnableButtons(false)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask, lastMessage],
+		[mayaiAsk, startNewTask, lastMessage],
 	)
 
 	const handleSecondaryButtonClick = useCallback(
@@ -510,7 +510,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				return
 			}
 
-			switch (clineAsk) {
+			switch (mayaiAsk) {
 				case "api_req_failed":
 				case "mistake_limit_reached":
 				case "auto_approval_max_req_reached":
@@ -541,13 +541,13 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					break
 			}
 			setSendingDisabled(true)
-			setClineAsk(undefined)
+			setMayaiAsk(undefined)
 			setEnableButtons(false)
 			// setPrimaryButtonText(undefined)
 			// setSecondaryButtonText(undefined)
 			disableAutoScrollRef.current = false
 		},
-		[clineAsk, startNewTask, isStreaming],
+		[mayaiAsk, startNewTask, isStreaming],
 	)
 
 	const handleTaskCloseButtonClick = useCallback(() => {
@@ -649,7 +649,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		return modifiedMessages.filter((message) => {
 			switch (message.ask) {
 				case "completion_result":
-					// don't show a chat row for a completion_result ask without text. This specific type of message only occurs if cline wants to execute a command as part of its completion result, in which case we interject the completion_result tool with the execute_command tool.
+					// don't show a chat row for a completion_result ask without text. This specific type of message only occurs if mayai wants to execute a command as part of its completion result, in which case we interject the completion_result tool with the execute_command tool.
 					if (message.text === "") {
 						return false
 					}
@@ -665,7 +665,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				case "deleted_api_reqs": // aggregated api_req metrics from deleted messages
 					return false
 				case "text":
-					// Sometimes cline returns an empty text message, we don't want to render these. (We also use a say text for user messages, so in case they just sent images we still render that)
+					// Sometimes mayai returns an empty text message, we don't want to render these. (We also use a say text for user messages, so in case they just sent images we still render that)
 					if ((message.text ?? "") === "" && (message.images?.length ?? 0) === 0) {
 						return false
 					}
@@ -677,7 +677,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		})
 	}, [modifiedMessages])
 
-	const isBrowserSessionMessage = (message: ClineMessage): boolean => {
+	const isBrowserSessionMessage = (message: MayaiMessage): boolean => {
 		// which of visible messages are browser session messages, see above
 
 		// NOTE: any messages we want to make as part of a browser session should be included here
@@ -700,8 +700,8 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}
 
 	const groupedMessages = useMemo(() => {
-		const result: (ClineMessage | ClineMessage[])[] = []
-		let currentGroup: ClineMessage[] = []
+		const result: (MayaiMessage | MayaiMessage[])[] = []
+		let currentGroup: MayaiMessage[] = []
 		let isInBrowserSession = false
 
 		const endBrowserSession = () => {
@@ -741,7 +741,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 
 					// Check if this is a close action
 					if (message.say === "browser_action") {
-						const browserAction = JSON.parse(message.text || "{}") as ClineSayBrowserAction
+						const browserAction = JSON.parse(message.text || "{}") as MayaiSayBrowserAction
 						if (browserAction.action === "close") {
 							endBrowserSession()
 						}
@@ -884,7 +884,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 	}, [task])
 
 	const itemContent = useCallback(
-		(index: number, messageOrGroup: ClineMessage | ClineMessage[]) => {
+		(index: number, messageOrGroup: MayaiMessage | MayaiMessage[]) => {
 			// browser session group
 			if (Array.isArray(messageOrGroup)) {
 				return (

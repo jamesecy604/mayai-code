@@ -1,6 +1,6 @@
 {
 	"name": "claude-dev",
-	"displayName": "Cline",
+	"displayName": "Mayai",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.14.1",
 	"icon": "assets/icons/icon.png",
@@ -8,15 +8,15 @@
 		"vscode": "^1.84.0"
 	},
 	"author": {
-		"name": "Cline Bot Inc."
+		"name": "Mayai Bot Inc."
 	},
 	"license": "Apache-2.0",
 	"publisher": "saoudrizwan",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/cline/cline"
+		"url": "https://github.com/mayai/mayai"
 	},
-	"homepage": "https://cline.bot",
+	"homepage": "https://mayai.bot",
 	"categories": [
 		"AI",
 		"Chat",
@@ -26,7 +26,7 @@
 		"Testing"
 	],
 	"keywords": [
-		"cline",
+		"mayai",
 		"claude",
 		"dev",
 		"mcp",
@@ -48,7 +48,7 @@
 			"activitybar": [
 				{
 					"id": "claude-dev-ActivityBar",
-					"title": "Cline",
+					"title": "Mayai",
 					"icon": "assets/icons/icon.svg"
 				}
 			]
@@ -64,71 +64,71 @@
 		},
 		"commands": [
 			{
-				"command": "cline.plusButtonClicked",
+				"command": "mayai.plusButtonClicked",
 				"title": "New Task",
 				"icon": "$(add)"
 			},
 			{
-				"command": "cline.mcpButtonClicked",
+				"command": "mayai.mcpButtonClicked",
 				"title": "MCP Servers",
 				"icon": "$(server)"
 			},
 			{
-				"command": "cline.historyButtonClicked",
+				"command": "mayai.historyButtonClicked",
 				"title": "History",
 				"icon": "$(history)"
 			},
 			{
-				"command": "cline.popoutButtonClicked",
+				"command": "mayai.popoutButtonClicked",
 				"title": "Open in Editor",
 				"icon": "$(link-external)"
 			},
 			{
-				"command": "cline.accountButtonClicked",
+				"command": "mayai.accountButtonClicked",
 				"title": "Account",
 				"icon": "$(account)"
 			},
 			{
-				"command": "cline.settingsButtonClicked",
+				"command": "mayai.settingsButtonClicked",
 				"title": "Settings",
 				"icon": "$(settings-gear)"
 			},
 			{
-				"command": "cline.openInNewTab",
+				"command": "mayai.openInNewTab",
 				"title": "Open In New Tab",
-				"category": "Cline"
+				"category": "Mayai"
 			},
 			{
-				"command": "cline.dev.createTestTasks",
+				"command": "mayai.dev.createTestTasks",
 				"title": "Create Test Tasks",
-				"category": "Cline",
-				"when": "cline.isDevMode"
+				"category": "Mayai",
+				"when": "mayai.isDevMode"
 			},
 			{
-				"command": "cline.addToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"command": "mayai.addToChat",
+				"title": "Add to Mayai",
+				"category": "Mayai"
 			},
 			{
-				"command": "cline.addTerminalOutputToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
+				"command": "mayai.addTerminalOutputToChat",
+				"title": "Add to Mayai",
+				"category": "Mayai"
 			},
 			{
-				"command": "cline.focusChatInput",
+				"command": "mayai.focusChatInput",
 				"title": "Jump to Chat Input",
-				"category": "Cline"
+				"category": "Mayai"
 			},
 			{
-				"command": "cline.generateGitCommitMessage",
-				"title": "Generate Commit Message with Cline",
-				"category": "Cline",
+				"command": "mayai.generateGitCommitMessage",
+				"title": "Generate Commit Message with Mayai",
+				"category": "Mayai",
 				"icon": "$(robot)"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "cline.addToChat",
+				"command": "mayai.addToChat",
 				"key": "cmd+'",
 				"mac": "cmd+'",
 				"win": "ctrl+'",
@@ -136,106 +136,106 @@
 				"when": "editorHasSelection"
 			},
 			{
-				"command": "cline.generateGitCommitMessage",
+				"command": "mayai.generateGitCommitMessage",
 				"when": "scmProvider == git"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "cline.plusButtonClicked",
+					"command": "mayai.plusButtonClicked",
 					"group": "navigation@1",
 					"when": "view == claude-dev.SidebarProvider"
 				},
 				{
-					"command": "cline.mcpButtonClicked",
+					"command": "mayai.mcpButtonClicked",
 					"group": "navigation@2",
 					"when": "view == claude-dev.SidebarProvider"
 				},
 				{
-					"command": "cline.historyButtonClicked",
+					"command": "mayai.historyButtonClicked",
 					"group": "navigation@3",
 					"when": "view == claude-dev.SidebarProvider"
 				},
 				{
-					"command": "cline.popoutButtonClicked",
+					"command": "mayai.popoutButtonClicked",
 					"group": "navigation@4",
 					"when": "view == claude-dev.SidebarProvider"
 				},
 				{
-					"command": "cline.accountButtonClicked",
+					"command": "mayai.accountButtonClicked",
 					"group": "navigation@5",
 					"when": "view == claude-dev.SidebarProvider"
 				},
 				{
-					"command": "cline.settingsButtonClicked",
+					"command": "mayai.settingsButtonClicked",
 					"group": "navigation@6",
 					"when": "view == claude-dev.SidebarProvider"
 				}
 			],
 			"editor/title": [
 				{
-					"command": "cline.plusButtonClicked",
+					"command": "mayai.plusButtonClicked",
 					"group": "navigation@1",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				},
 				{
-					"command": "cline.mcpButtonClicked",
+					"command": "mayai.mcpButtonClicked",
 					"group": "navigation@2",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				},
 				{
-					"command": "cline.historyButtonClicked",
+					"command": "mayai.historyButtonClicked",
 					"group": "navigation@3",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				},
 				{
-					"command": "cline.popoutButtonClicked",
+					"command": "mayai.popoutButtonClicked",
 					"group": "navigation@4",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				},
 				{
-					"command": "cline.accountButtonClicked",
+					"command": "mayai.accountButtonClicked",
 					"group": "navigation@5",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				},
 				{
-					"command": "cline.settingsButtonClicked",
+					"command": "mayai.settingsButtonClicked",
 					"group": "navigation@6",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "cline.addToChat",
+					"command": "mayai.addToChat",
 					"group": "navigation",
 					"when": "editorHasSelection"
 				}
 			],
 			"terminal/context": [
 				{
-					"command": "cline.addTerminalOutputToChat",
+					"command": "mayai.addTerminalOutputToChat",
 					"group": "navigation"
 				}
 			],
 			"scm/title": [
 				{
-					"command": "cline.generateGitCommitMessage",
+					"command": "mayai.generateGitCommitMessage",
 					"group": "navigation",
 					"when": "scmProvider == git"
 				}
 			],
 			"commandPalette": [
 				{
-					"command": "cline.generateGitCommitMessage",
+					"command": "mayai.generateGitCommitMessage",
 					"when": "scmProvider == git"
 				}
 			]
 		},
 		"configuration": {
-			"title": "Cline",
+			"title": "Mayai",
 			"properties": {
-				"cline.vsCodeLmModelSelector": {
+				"mayai.vsCodeLmModelSelector": {
 					"type": "object",
 					"properties": {
 						"vendor": {
@@ -249,17 +249,17 @@
 					},
 					"description": "Settings for VSCode Language Model API"
 				},
-				"cline.enableCheckpoints": {
+				"mayai.enableCheckpoints": {
 					"type": "boolean",
 					"default": true,
 					"description": "Enables extension to save checkpoints of workspace throughout the task. Uses git under the hood which may not work well with large workspaces."
 				},
-				"cline.disableBrowserTool": {
+				"mayai.disableBrowserTool": {
 					"type": "boolean",
 					"default": false,
 					"description": "Disables extension from spawning browser session."
 				},
-				"cline.modelSettings.o3Mini.reasoningEffort": {
+				"mayai.modelSettings.o3Mini.reasoningEffort": {
 					"type": "string",
 					"enum": [
 						"low",
@@ -269,12 +269,12 @@
 					"default": "medium",
 					"description": "Controls the reasoning effort when using an OpenAI reasoning model. Higher values may result in more thorough but slower responses."
 				},
-				"cline.chromeExecutablePath": {
+				"mayai.chromeExecutablePath": {
 					"type": "string",
 					"default": null,
 					"description": "Path to Chrome executable for browser use functionality. If not set, the extension will attempt to find or download it automatically."
 				},
-				"cline.preferredLanguage": {
+				"mayai.preferredLanguage": {
 					"type": "string",
 					"enum": [
 						"English",
@@ -297,9 +297,9 @@
 						"Turkish - Türkçe"
 					],
 					"default": "English",
-					"description": "The language that Cline should use for communication."
+					"description": "The language that Mayai should use for communication."
 				},
-				"cline.mcpMarketplace.enabled": {
+				"mayai.mcpMarketplace.enabled": {
 					"type": "boolean",
 					"default": true,
 					"description": "Controls whether the MCP Marketplace is enabled."

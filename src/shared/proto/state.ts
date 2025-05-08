@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { EmptyRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "mayai"
 
 export interface State {
 	stateJson: string
@@ -75,7 +75,7 @@ export const State: MessageFns<State> = {
 export type StateServiceDefinition = typeof StateServiceDefinition
 export const StateServiceDefinition = {
 	name: "StateService",
-	fullName: "cline.StateService",
+	fullName: "mayai.StateService",
 	methods: {
 		getLatestState: {
 			name: "getLatestState",

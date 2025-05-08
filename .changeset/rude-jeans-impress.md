@@ -2,4 +2,4 @@
 "claude-dev": minor
 ---
 
-Add ability to generate commit message via cline
+Add ability to generate commit message via mayai

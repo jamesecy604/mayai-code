@@ -52,7 +52,7 @@ export type GlobalStateKey =
 	| "openRouterModelInfo"
 	| "openRouterProviderSorting"
 	| "autoApprovalSettings"
-	| "globalClineRulesToggles"
+	| "globalMayaiRulesToggles"
 	| "browserSettings"
 	| "chatSettings"
 	| "vsCodeLmModelSelector"
@@ -82,4 +82,4 @@ export type GlobalStateKey =
 	| "requestTimeoutMs"
 	| "shellIntegrationTimeout"
 
-export type LocalStateKey = "localClineRulesToggles"
+export type LocalStateKey = "localMayaiRulesToggles"

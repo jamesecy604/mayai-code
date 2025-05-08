@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { Metadata } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "mayai"
 
 export enum McpServerStatus {
 	/**
@@ -978,7 +978,7 @@ export const McpServers: MessageFns<McpServers> = {
 export type McpServiceDefinition = typeof McpServiceDefinition
 export const McpServiceDefinition = {
 	name: "McpService",
-	fullName: "cline.McpService",
+	fullName: "mayai.McpService",
 	methods: {
 		toggleMcpServer: {
 			name: "toggleMcpServer",

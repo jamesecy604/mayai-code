@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from "react"
-import { ClineMessage } from "@shared/ExtensionMessage"
+import { MayaiMessage } from "@shared/ExtensionMessage"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import TaskTimelineTooltip from "./TaskTimelineTooltip"
@@ -12,10 +12,10 @@ const BLOCK_GAP = "3px"
 const TOOLTIP_MARGIN = 32 // 32px margin on each side
 
 interface TaskTimelineProps {
-	messages: ClineMessage[]
+	messages: MayaiMessage[]
 }
 
-const getBlockColor = (message: ClineMessage): string => {
+const getBlockColor = (message: MayaiMessage): string => {
 	if (message.type === "say") {
 		switch (message.say) {
 			case "task":
@@ -94,7 +94,7 @@ const getBlockColor = (message: ClineMessage): string => {
 }
 
 const TaskTimeline: React.FC<TaskTimelineProps> = ({ messages }) => {
-	const [hoveredMessage, setHoveredMessage] = useState<ClineMessage | null>(null)
+	const [hoveredMessage, setHoveredMessage] = useState<MayaiMessage | null>(null)
 	const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const scrollableRef = useRef<HTMLDivElement>(null)
@@ -140,7 +140,7 @@ const TaskTimeline: React.FC<TaskTimelineProps> = ({ messages }) => {
 		return null
 	}
 
-	const handleMouseEnter = (message: ClineMessage, event: React.MouseEvent<HTMLDivElement>) => {
+	const handleMouseEnter = (message: MayaiMessage, event: React.MouseEvent<HTMLDivElement>) => {
 		setHoveredMessage(message)
 
 		const viewportWidth = window.innerWidth

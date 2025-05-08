@@ -31,39 +31,39 @@ export interface ServiceHandlerConfig {
  * Map of service names to their handler configurations
  */
 export const serviceHandlers: Record<string, ServiceHandlerConfig> = {
-	"cline.AccountService": {
+	"mayai.AccountService": {
 		requestHandler: handleAccountServiceRequest,
 		streamingHandler: handleAccountServiceStreamingRequest,
 	},
-	"cline.BrowserService": {
+	"mayai.BrowserService": {
 		requestHandler: handleBrowserServiceRequest,
 		streamingHandler: handleBrowserServiceStreamingRequest,
 	},
-	"cline.CheckpointsService": {
+	"mayai.CheckpointsService": {
 		requestHandler: handleCheckpointsServiceRequest,
 		streamingHandler: handleCheckpointsServiceStreamingRequest,
 	},
-	"cline.FileService": {
+	"mayai.FileService": {
 		requestHandler: handleFileServiceRequest,
 		streamingHandler: handleFileServiceStreamingRequest,
 	},
-	"cline.McpService": {
+	"mayai.McpService": {
 		requestHandler: handleMcpServiceRequest,
 		streamingHandler: handleMcpServiceStreamingRequest,
 	},
-	"cline.StateService": {
+	"mayai.StateService": {
 		requestHandler: handleStateServiceRequest,
 		streamingHandler: handleStateServiceStreamingRequest,
 	},
-	"cline.TaskService": {
+	"mayai.TaskService": {
 		requestHandler: handleTaskServiceRequest,
 		streamingHandler: handleTaskServiceStreamingRequest,
 	},
-	"cline.WebService": {
+	"mayai.WebService": {
 		requestHandler: handleWebServiceRequest,
 		streamingHandler: handleWebServiceStreamingRequest,
 	},
-	"cline.ModelsService": {
+	"mayai.ModelsService": {
 		requestHandler: handleModelsServiceRequest,
 		streamingHandler: handleModelsServiceStreamingRequest,
 	},

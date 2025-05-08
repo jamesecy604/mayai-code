@@ -68,7 +68,7 @@ export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
 			return new MistralHandler(options)
 		case "vscode-lm":
 			return new VsCodeLmHandler(options)
-		case "cline":
+		case "mayai":
 			return new ClineHandler(options)
 		case "litellm":
 			return new LiteLlmHandler(options)

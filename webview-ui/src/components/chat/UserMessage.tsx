@@ -4,7 +4,7 @@ import { highlightText } from "./TaskHeader"
 import DynamicTextArea from "react-textarea-autosize"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 import { CheckpointsServiceClient } from "@/services/grpc-client"
-import { ClineCheckpointRestore } from "@shared/WebviewMessage"
+import { MayaiCheckpointRestore } from "@shared/WebviewMessage"
 
 interface UserMessageProps {
 	text?: string
@@ -36,7 +36,7 @@ const UserMessage: React.FC<UserMessageProps> = ({ text, images, messageTs, send
 		}
 	}, [isEditing])
 
-	const handleRestoreWorkspace = async (type: ClineCheckpointRestore) => {
+	const handleRestoreWorkspace = async (type: MayaiCheckpointRestore) => {
 		const delay = type === "task" ? 500 : 1000 // Delay for task and workspace restore
 		setIsEditing(false)
 
@@ -150,10 +150,10 @@ const UserMessage: React.FC<UserMessageProps> = ({ text, images, messageTs, send
 
 // Reusable button component for restore actions
 interface RestoreButtonProps {
-	type: ClineCheckpointRestore
+	type: MayaiCheckpointRestore
 	label: string
 	isPrimary: boolean
-	onClick: (type: ClineCheckpointRestore) => void
+	onClick: (type: MayaiCheckpointRestore) => void
 	title?: string
 }
 

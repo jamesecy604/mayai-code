@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, useEffect } from "react"
 import { useEvent } from "react-use"
 import styled from "styled-components"
 import { ExtensionMessage } from "@shared/ExtensionMessage"
-import { ClineCheckpointRestore } from "@shared/WebviewMessage"
+import { MayaiCheckpointRestore } from "@shared/WebviewMessage"
 import { CheckpointsServiceClient } from "@/services/grpc-client"
 import { vscode } from "@/utils/vscode"
 import { CODE_BLOCK_BG_COLOR } from "@/components/common/CodeBlock"
@@ -64,7 +64,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: Checkmar
 	const handleRestoreTask = async () => {
 		setRestoreTaskDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "task"
+			const restoreType: MayaiCheckpointRestore = "task"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,
@@ -78,7 +78,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: Checkmar
 	const handleRestoreWorkspace = async () => {
 		setRestoreWorkspaceDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "workspace"
+			const restoreType: MayaiCheckpointRestore = "workspace"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,
@@ -92,7 +92,7 @@ export const CheckmarkControl = ({ messageTs, isCheckpointCheckedOut }: Checkmar
 	const handleRestoreBoth = async () => {
 		setRestoreBothDisabled(true)
 		try {
-			const restoreType: ClineCheckpointRestore = "taskAndWorkspace"
+			const restoreType: MayaiCheckpointRestore = "taskAndWorkspace"
 			await CheckpointsServiceClient.checkpointRestore({
 				number: messageTs,
 				restoreType,

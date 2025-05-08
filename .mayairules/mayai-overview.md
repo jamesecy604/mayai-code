@@ -1,8 +1,8 @@
-# Cline Extension Architecture & Development Guide
+# Mayai Extension Architecture & Development Guide
 
 ## Project Overview
 
-Cline is a VSCode extension that provides AI assistance through a combination of a core extension backend and a React-based webview frontend. The extension is built with TypeScript and follows a modular architecture pattern.
+Mayai is a VSCode extension that provides AI assistance through a combination of a core extension backend and a React-based webview frontend. The extension is built with TypeScript and follows a modular architecture pattern.
 
 ## Architecture Overview
 
@@ -100,7 +100,7 @@ The WebviewProvider class in `src/core/webview/index.ts` is responsible for:
 - Supporting Hot Module Replacement (HMR) for development
 - Setting up message listeners between the webview and extension
 
-The WebviewProvider maintains a reference to the Controller and delegates message handling to it. It also handles the creation of both sidebar and tab panel webviews, allowing Cline to be used in different contexts within VSCode.
+The WebviewProvider maintains a reference to the Controller and delegates message handling to it. It also handles the creation of both sidebar and tab panel webviews, allowing Mayai to be used in different contexts within VSCode.
 
 ### Core Extension State
 
@@ -148,7 +148,7 @@ The ExtensionStateContext handles:
 
 ## API Provider System
 
-Cline supports multiple AI providers through a modular API provider system. Each provider is implemented as a separate module in the `src/api/providers/` directory and follows a common interface.
+Mayai supports multiple AI providers through a modular API provider system. Each provider is implemented as a separate module in the `src/api/providers/` directory and follows a common interface.
 
 ### API Provider Architecture
 
@@ -184,7 +184,7 @@ The system supports:
 
 ### Plan/Act Mode API Configuration
 
-Cline supports separate model configurations for Plan and Act modes:
+Mayai supports separate model configurations for Plan and Act modes:
 - Different models can be used for planning vs. execution
 - The system preserves model selections when switching modes
 - The Controller handles the transition between modes and updates the API configuration accordingly
@@ -220,7 +220,7 @@ class Task {
       await pWaitFor(() => this.userMessageContentReady)
       
       // 4. Continue loop with tool result
-      const recDidEndLoop = await this.recursivelyMakeClineRequests(
+      const recDidEndLoop = await this.recursivelyMakeMayaiRequests(
         this.userMessageContent
       )
     }
@@ -332,7 +332,7 @@ class Task {
     await pWaitFor(() => this.controllerRef.deref()?.mcpHub?.isConnecting !== true)
 
     // 2. Manage context window
-    const previousRequest = this.clineMessages[previousApiReqIndex]
+    const previousRequest = this.mayaiMessages[previousApiReqIndex]
     if (previousRequest?.text) {
       const { tokensIn, tokensOut } = JSON.parse(previousRequest.text || "{}")
       const totalTokens = (tokensIn || 0) + (tokensOut || 0)
@@ -430,7 +430,7 @@ The Task class provides robust task state management and resumption capabilities
 class Task {
   async resumeTaskFromHistory() {
     // 1. Load saved state
-    this.clineMessages = await getSavedClineMessages(this.getContext(), this.taskId)
+    this.mayaiMessages = await getSavedMayaiMessages(this.getContext(), this.taskId)
     this.apiConversationHistory = await getSavedApiConversationHistory(this.getContext(), this.taskId)
 
     // 2. Handle interrupted tool executions
@@ -462,7 +462,7 @@ class Task {
   private async saveTaskState() {
     // Save conversation history
     await saveApiConversationHistory(this.getContext(), this.taskId, this.apiConversationHistory)
-    await saveClineMessages(this.getContext(), this.taskId, this.clineMessages)
+    await saveMayaiMessages(this.getContext(), this.taskId, this.mayaiMessages)
     
     // Create checkpoint
     const commitHash = await this.checkpointTracker?.commit()
@@ -506,7 +506,7 @@ Key aspects of task state management:
 
 ## Plan/Act Mode System
 
-Cline implements a dual-mode system that separates planning from execution:
+Mayai implements a dual-mode system that separates planning from execution:
 
 ### Mode Architecture
 
@@ -680,7 +680,7 @@ The McpHub class:
 
 ### MCP Server Types
 
-Cline supports two types of MCP server connections:
+Mayai supports two types of MCP server connections:
 - **Stdio**: Command-line based servers that communicate via standard I/O
 - **SSE**: HTTP-based servers that communicate via Server-Sent Events
 
@@ -722,7 +722,7 @@ class Controller {
   async downloadMcp(mcpId: string) {
     // Fetch server details from marketplace
     const response = await axios.post<McpDownloadResponse>(
-      "https://api.cline.bot/v1/mcp/download",
+      "https://api.mayai.bot/v1/mcp/download",
       { mcpId },
       {
         headers: { "Content-Type": "application/json" },
@@ -734,14 +734,14 @@ class Controller {
     const task = `Set up the MCP server from ${mcpDetails.githubUrl}...`
 
     // Initialize task and show chat view
-    await this.initClineWithTask(task)
+    await this.initMayaiWithTask(task)
   }
 }
 ```
 
 ## Conclusion
 
-This guide provides a comprehensive overview of the Cline extension architecture, with special focus on state management, data persistence, and code organization. Following these patterns ensures robust feature implementation with proper state handling across the extension's components.
+This guide provides a comprehensive overview of the Mayai extension architecture, with special focus on state management, data persistence, and code organization. Following these patterns ensures robust feature implementation with proper state handling across the extension's components.
 
 Remember:
 - Always persist important state in the extension
@@ -756,8 +756,8 @@ Remember:
 
 ## Contributing
 
-Contributions to the Cline extension are welcome! Please follow these guidelines:
+Contributions to the Mayai extension are welcome! Please follow these guidelines:
 
 When adding new tools or API providers, follow the existing patterns in the `src/integrations/` and `src/api/providers/` directories, respectively. Ensure that your code is well-documented and includes appropriate error handling.
 
-The `.clineignore` file allows users to specify files and directories that Cline should not access. When implementing new features, respect the `.clineignore` rules and ensure that your code does not attempt to read or modify ignored files.
+The `.mayaiignore` file allows users to specify files and directories that Mayai should not access. When implementing new features, respect the `.mayaiignore` rules and ensure that your code does not attempt to read or modify ignored files.

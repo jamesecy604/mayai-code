@@ -1,46 +1,46 @@
-# Cline API
+# Mayai API
 
-The Cline extension exposes an API that can be used by other extensions. To use this API in your extension:
+The Mayai extension exposes an API that can be used by other extensions. To use this API in your extension:
 
-1. Copy `src/extension-api/cline.d.ts` to your extension's source directory.
-2. Include `cline.d.ts` in your extension's compilation.
+1. Copy `src/extension-api/mayai.d.ts` to your extension's source directory.
+2. Include `mayai.d.ts` in your extension's compilation.
 3. Get access to the API with the following code:
 
     ```ts
-    const clineExtension = vscode.extensions.getExtension<ClineAPI>("saoudrizwan.claude-dev")
+    const mayaiExtension = vscode.extensions.getExtension<MayaiAPI>("saoudrizwan.claude-dev")
 
-    if (!clineExtension?.isActive) {
-    	throw new Error("Cline extension is not activated")
+    if (!mayaiExtension?.isActive) {
+    	throw new Error("Mayai extension is not activated")
     }
 
-    const cline = clineExtension.exports
+    const mayai = mayaiExtension.exports
 
-    if (cline) {
+    if (mayai) {
     	// Now you can use the API
 
     	// Set custom instructions
-    	await cline.setCustomInstructions("Talk like a pirate")
+    	await mayai.setCustomInstructions("Talk like a pirate")
 
     	// Get custom instructions
-    	const instructions = await cline.getCustomInstructions()
+    	const instructions = await mayai.getCustomInstructions()
     	console.log("Current custom instructions:", instructions)
 
     	// Start a new task with an initial message
-    	await cline.startNewTask("Hello, Cline! Let's make a new project...")
+    	await mayai.startNewTask("Hello, Mayai! Let's make a new project...")
 
     	// Start a new task with an initial message and images
-    	await cline.startNewTask("Use this design language", ["data:image/webp;base64,..."])
+    	await mayai.startNewTask("Use this design language", ["data:image/webp;base64,..."])
 
     	// Send a message to the current task
-    	await cline.sendMessage("Can you fix the @problems?")
+    	await mayai.sendMessage("Can you fix the @problems?")
 
     	// Simulate pressing the primary button in the chat interface (e.g. 'Save' or 'Proceed While Running')
-    	await cline.pressPrimaryButton()
+    	await mayai.pressPrimaryButton()
 
     	// Simulate pressing the secondary button in the chat interface (e.g. 'Reject')
-    	await cline.pressSecondaryButton()
+    	await mayai.pressSecondaryButton()
     } else {
-    	console.error("Cline API is not available")
+    	console.error("Mayai API is not available")
     }
     ```
 
@@ -52,4 +52,4 @@ The Cline extension exposes an API that can be used by other extensions. To use 
     ]
     ```
 
-For detailed information on the available methods and their usage, refer to the `cline.d.ts` file.
+For detailed information on the available methods and their usage, refer to the `mayai.d.ts` file.

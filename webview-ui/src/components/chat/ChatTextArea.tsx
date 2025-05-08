@@ -38,7 +38,7 @@ import ContextMenu from "@/components/chat/ContextMenu"
 import SlashCommandMenu from "@/components/chat/SlashCommandMenu"
 import { ChatSettings } from "@shared/ChatSettings"
 import ServersToggleModal from "./ServersToggleModal"
-import ClineRulesToggleModal from "../cline-rules/ClineRulesToggleModal"
+import MayaiRulesToggleModal from "../mayai-rules/MayaiRulesToggleModal"
 
 const getImageDimensions = (dataUrl: string): Promise<{ width: number; height: number }> => {
 	return new Promise((resolve, reject) => {
@@ -1028,7 +1028,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 			const unknownModel = "unknown"
 			if (!apiConfiguration) return unknownModel
 			switch (selectedProvider) {
-				case "cline":
+				case "mayai":
 					return `${selectedProvider}:${selectedModelId}`
 				case "openai":
 					return `openai-compat:${selectedModelId}`
@@ -1615,7 +1615,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 								</VSCodeButton>
 							</Tooltip>
 							<ServersToggleModal />
-							<ClineRulesToggleModal />
+							<MayaiRulesToggleModal />
 							<ModelContainer ref={modelSelectorRef}>
 								<ModelButtonWrapper ref={buttonRef}>
 									<ModelDisplayButton
@@ -1651,7 +1651,7 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 					<Tooltip
 						style={{ zIndex: 1000 }}
 						visible={shownTooltipMode !== null}
-						tipText={`In ${shownTooltipMode === "act" ? "Act" : "Plan"}  mode, Cline will ${shownTooltipMode === "act" ? "complete the task immediately" : "gather information to architect a plan"}`}
+						tipText={`In ${shownTooltipMode === "act" ? "Act" : "Plan"}  mode, Mayai will ${shownTooltipMode === "act" ? "complete the task immediately" : "gather information to architect a plan"}`}
 						hintText={`Toggle w/ ${metaKeyChar}+Shift+A`}>
 						<SwitchContainer data-testid="mode-switch" disabled={false} onClick={onModeToggle}>
 							<Slider isAct={chatSettings.mode === "act"} isPlan={chatSettings.mode === "plan"} />

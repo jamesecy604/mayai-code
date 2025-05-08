@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { Empty, EmptyRequest, Metadata, StringArrayRequest, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "mayai"
 
 /** Request message for creating a new task */
 export interface NewTaskRequest {
@@ -113,7 +113,7 @@ export const NewTaskRequest: MessageFns<NewTaskRequest> = {
 export type TaskServiceDefinition = typeof TaskServiceDefinition
 export const TaskServiceDefinition = {
 	name: "TaskService",
-	fullName: "cline.TaskService",
+	fullName: "mayai.TaskService",
 	methods: {
 		/** Cancels the currently running task */
 		cancelTask: {

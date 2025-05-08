@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire"
 import { EmptyRequest, StringArray, StringRequest } from "./common"
 
-export const protobufPackage = "cline"
+export const protobufPackage = "mayai"
 
 /** List of VS Code LM models */
 export interface VsCodeLmModelsArray {
@@ -195,7 +195,7 @@ export const VsCodeLmModel: MessageFns<VsCodeLmModel> = {
 export type ModelsServiceDefinition = typeof ModelsServiceDefinition
 export const ModelsServiceDefinition = {
 	name: "ModelsService",
-	fullName: "cline.ModelsService",
+	fullName: "mayai.ModelsService",
 	methods: {
 		/** Fetches available models from Ollama */
 		getOllamaModels: {

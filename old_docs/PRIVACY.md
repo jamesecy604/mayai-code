@@ -1,1 +1,1 @@
-See [https://cline.bot/privacy](https://cline.bot/privacy) for our privacy policy.
+See [https://mayai.bot/privacy](https://mayai.bot/privacy) for our privacy policy.

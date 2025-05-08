@@ -13,11 +13,11 @@ import {
 	calculateToolSuccessRate,
 } from "./GitHelper"
 import { updateGlobalState, getAllExtensionState, updateApiConfiguration, storeSecret } from "@core/storage/state"
-import { ClineAsk, ExtensionMessage } from "@shared/ExtensionMessage"
+import { MayaiAsk, ExtensionMessage } from "@shared/ExtensionMessage"
 import { ApiProvider } from "@shared/api"
 import { WebviewMessage } from "@shared/WebviewMessage"
 import { HistoryItem } from "@shared/HistoryItem"
-import { getSavedClineMessages, getSavedApiConversationHistory } from "@core/storage/disk"
+import { getSavedMayaiMessages, getSavedApiConversationHistory } from "@core/storage/disk"
 
 /**
  * Creates a tracker to monitor tool calls and failures during task execution
@@ -129,8 +129,8 @@ async function updateAutoApprovalSettings(context: vscode.ExtensionContext, prov
  * @returns The created HTTP server instance
  */
 export function createTestServer(webviewProvider?: WebviewProvider): http.Server {
-	// Try to show the Cline sidebar
-	Logger.log("[createTestServer] Opening Cline in sidebar...")
+	// Try to show the Mayai sidebar
+	Logger.log("[createTestServer] Opening Mayai in sidebar...")
 	vscode.commands.executeCommand("workbench.view.claude-dev-ActivityBar")
 
 	// Then ensure the webview is focused/loaded
@@ -196,7 +196,7 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 				const visibleWebview = WebviewProvider.getVisibleInstance()
 				if (!visibleWebview || !visibleWebview.controller) {
 					res.writeHead(500)
-					res.end(JSON.stringify({ error: "No active Cline instance found" }))
+					res.end(JSON.stringify({ error: "No active Mayai instance found" }))
 					return
 				}
 
@@ -257,7 +257,7 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 						// Update API configuration with API key
 						const updatedConfig = {
 							...apiConfiguration,
-							apiProvider: "cline" as ApiProvider,
+							apiProvider: "mayai" as ApiProvider,
 							clineApiKey: apiKey,
 						}
 
@@ -267,8 +267,8 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 						// Update the API configuration
 						await updateApiConfiguration(visibleWebview.controller.context, updatedConfig)
 
-						// Update global state to use cline provider
-						await updateGlobalState(visibleWebview.controller.context, "apiProvider", "cline" as ApiProvider)
+						// Update global state to use mayai provider
+						await updateGlobalState(visibleWebview.controller.context, "apiProvider", "mayai" as ApiProvider)
 
 						// Post state to webview to reflect changes
 						await visibleWebview.controller.postStateToWebview()
@@ -344,10 +344,10 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
 						let apiConversationHistory: any[] = []
 						try {
 							if (typeof taskId === "string") {
-								messages = await getSavedClineMessages(visibleWebview.controller.context, taskId)
+								messages = await getSavedMayaiMessages(visibleWebview.controller.context, taskId)
 							}
 						} catch (error) {
-							Logger.log(`Error getting saved Cline messages: ${error}`)
+							Logger.log(`Error getting saved Mayai messages: ${error}`)
 						}
 
 						try {
@@ -496,7 +496,7 @@ export function createTestServer(webviewProvider?: WebviewProvider): http.Server
  * @returns A disposable that can be used to clean up the message catcher
  */
 export function createMessageCatcher(webviewProvider: WebviewProvider): vscode.Disposable {
-	Logger.log("Cline message catcher registered")
+	Logger.log("Mayai message catcher registered")
 
 	if (webviewProvider && webviewProvider.controller) {
 		const originalPostMessageToWebview = webviewProvider.controller.postMessageToWebview
@@ -511,7 +511,7 @@ export function createMessageCatcher(webviewProvider: WebviewProvider): vscode.D
 
 			// Check for ask messages that require user intervention
 			if (message.type === "partialMessage" && message.partialMessage?.type === "ask" && !message.partialMessage.partial) {
-				const askType = message.partialMessage.ask as ClineAsk
+				const askType = message.partialMessage.ask as MayaiAsk
 				const askText = message.partialMessage.text
 
 				// Automatically respond to different types of asks
@@ -528,7 +528,7 @@ export function createMessageCatcher(webviewProvider: WebviewProvider): vscode.D
 
 	return new vscode.Disposable(() => {
 		// Cleanup function if needed
-		Logger.log("Cline message catcher disposed")
+		Logger.log("Mayai message catcher disposed")
 	})
 }
 
@@ -538,7 +538,7 @@ export function createMessageCatcher(webviewProvider: WebviewProvider): vscode.D
  * @param askType The type of ask message
  * @param askText The text content of the ask message
  */
-function autoRespondToAsk(webviewProvider: WebviewProvider, askType: ClineAsk, askText?: string): void {
+function autoRespondToAsk(webviewProvider: WebviewProvider, askType: MayaiAsk, askText?: string): void {
 	if (!webviewProvider.controller) {
 		return
 	}
@@ -588,7 +588,7 @@ function autoRespondToAsk(webviewProvider: WebviewProvider, askType: ClineAsk, a
 			break
 
 		case "new_task":
-			// Decline creating a new task to keep the current task running
+			// Demayai creating a new task to keep the current task running
 			response.askResponse = "messageResponse"
 			response.text = "Continue with the current task."
 			break

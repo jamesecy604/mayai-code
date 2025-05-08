@@ -1,15 +1,15 @@
 import React from "react"
-import { ClineMessage } from "@shared/ExtensionMessage"
+import { MayaiMessage } from "@shared/ExtensionMessage"
 import { COLOR_WHITE, COLOR_GRAY, COLOR_DARK_GRAY, COLOR_BEIGE, COLOR_BLUE, COLOR_RED, COLOR_PURPLE, COLOR_GREEN } from "./colors"
 
 // Color mapping for different message types
 
 interface TaskTimelineTooltipProps {
-	message: ClineMessage
+	message: MayaiMessage
 }
 
 const TaskTimelineTooltip: React.FC<TaskTimelineTooltipProps> = ({ message }) => {
-	const getMessageDescription = (message: ClineMessage): string => {
+	const getMessageDescription = (message: MayaiMessage): string => {
 		if (message.type === "say") {
 			switch (message.say) {
 				// TODO: Need to confirm these classifcations with design
@@ -97,7 +97,7 @@ const TaskTimelineTooltip: React.FC<TaskTimelineTooltipProps> = ({ message }) =>
 		return "Unknown Message Type"
 	}
 
-	const getMessageContent = (message: ClineMessage): string => {
+	const getMessageContent = (message: MayaiMessage): string => {
 		if (message.text) {
 			if (message.type === "ask" && message.ask === "plan_mode_respond" && message.text) {
 				try {
@@ -123,7 +123,7 @@ const TaskTimelineTooltip: React.FC<TaskTimelineTooltipProps> = ({ message }) =>
 		return ""
 	}
 
-	const getTimestamp = (message: ClineMessage): string => {
+	const getTimestamp = (message: MayaiMessage): string => {
 		if (message.ts) {
 			const messageDate = new Date(message.ts)
 			const today = new Date()
@@ -148,7 +148,7 @@ const TaskTimelineTooltip: React.FC<TaskTimelineTooltipProps> = ({ message }) =>
 	}
 
 	// Get color for the indicator based on message type
-	const getMessageColor = (message: ClineMessage): string => {
+	const getMessageColor = (message: MayaiMessage): string => {
 		if (message.type === "say") {
 			switch (message.say) {
 				case "task":

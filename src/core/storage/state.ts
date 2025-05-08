@@ -10,7 +10,7 @@ import { BrowserSettings } from "@shared/BrowserSettings"
 import { ChatSettings } from "@shared/ChatSettings"
 import { TelemetrySetting } from "@shared/TelemetrySetting"
 import { UserInfo } from "@shared/UserInfo"
-import { ClineRulesToggles } from "@shared/cline-rules"
+import { MayaiRulesToggles } from "@shared/mayai-rules"
 /*
 	Storage
 	https://dev.to/kompotkot/how-to-use-secretstorage-in-your-vscode-extensions-2hco
@@ -128,7 +128,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		sambanovaApiKey,
 		planActSeparateModelsSettingRaw,
 		favoritedModelIds,
-		globalClineRulesToggles,
+		globalMayaiRulesToggles,
 		requestTimeoutMs,
 		shellIntegrationTimeout,
 	] = await Promise.all([
@@ -207,7 +207,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getSecret(context, "sambanovaApiKey") as Promise<string | undefined>,
 		getGlobalState(context, "planActSeparateModelsSetting") as Promise<boolean | undefined>,
 		getGlobalState(context, "favoritedModelIds") as Promise<string[] | undefined>,
-		getGlobalState(context, "globalClineRulesToggles") as Promise<ClineRulesToggles | undefined>,
+		getGlobalState(context, "globalMayaiRulesToggles") as Promise<MayaiRulesToggles | undefined>,
 		getGlobalState(context, "requestTimeoutMs") as Promise<number | undefined>,
 		getGlobalState(context, "shellIntegrationTimeout") as Promise<number | undefined>,
 	])
@@ -226,11 +226,11 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		}
 	}
 
-	const localClineRulesToggles = (await getWorkspaceState(context, "localClineRulesToggles")) as ClineRulesToggles
+	const localMayaiRulesToggles = (await getWorkspaceState(context, "localMayaiRulesToggles")) as MayaiRulesToggles
 
-	const o3MiniReasoningEffort = vscode.workspace.getConfiguration("cline.modelSettings.o3Mini").get("reasoningEffort", "medium")
+	const o3MiniReasoningEffort = vscode.workspace.getConfiguration("mayai.modelSettings.o3Mini").get("reasoningEffort", "medium")
 
-	const mcpMarketplaceEnabled = vscode.workspace.getConfiguration("cline").get<boolean>("mcpMarketplace.enabled", true)
+	const mcpMarketplaceEnabled = vscode.workspace.getConfiguration("mayai").get<boolean>("mcpMarketplace.enabled", true)
 
 	// Plan/Act separate models setting is a boolean indicating whether the user wants to use different models for plan and act. Existing users expect this to be enabled, while we want new users to opt in to this being disabled by default.
 	// On win11 state sometimes initializes as empty string instead of undefined
@@ -317,8 +317,8 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		customInstructions,
 		taskHistory,
 		autoApprovalSettings: autoApprovalSettings || DEFAULT_AUTO_APPROVAL_SETTINGS, // default value can be 0 or empty string
-		globalClineRulesToggles: globalClineRulesToggles || {},
-		localClineRulesToggles: localClineRulesToggles || {},
+		globalMayaiRulesToggles: globalMayaiRulesToggles || {},
+		localMayaiRulesToggles: localMayaiRulesToggles || {},
 		browserSettings: { ...DEFAULT_BROWSER_SETTINGS, ...browserSettings }, // this will ensure that older versions of browserSettings (e.g. before remoteBrowserEnabled was added) are merged with the default values (false for remoteBrowserEnabled)
 		chatSettings: chatSettings || DEFAULT_CHAT_SETTINGS,
 		userInfo,
