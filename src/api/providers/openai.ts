@@ -7,6 +7,12 @@ import { convertToOpenAiMessages } from "../transform/openai-format"
 import { ApiStream } from "../transform/stream"
 import { convertToR1Format } from "../transform/r1-format"
 import type { ChatCompletionReasoningEffort } from "openai/resources/chat/completions"
+import { geminiDefaultModelId, GeminiModelId, geminiModels } from "../../shared/api"
+import { DeepSeekModelId, deepSeekDefaultModelId, deepSeekModels } from "../../shared/api"
+import { openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../shared/api"
+import { anthropicDefaultModelId, AnthropicModelId, anthropicModels } from "../../shared/api"
+import { openAiNativeDefaultModelId, OpenAiNativeModelId, openAiNativeModels } from "../../shared/api"
+import { calculateApiCostOpenAI } from "../../utils/cost"
 
 export class OpenAiHandler implements ApiHandler {
 	private options: ApiHandlerOptions
@@ -26,20 +32,21 @@ export class OpenAiHandler implements ApiHandler {
 				baseURL: this.options.openAiBaseUrl,
 				apiKey: this.options.openAiApiKey,
 				apiVersion: this.options.azureApiVersion || azureOpenAiDefaultApiVersion,
-				defaultHeaders: this.options.openAiHeaders,
+				defaultHeaders: { ...this.options.openAiHeaders, "X-Task-ID": this.options.taskId },
 			})
 		} else {
 			this.client = new OpenAI({
 				baseURL: this.options.openAiBaseUrl,
 				apiKey: this.options.openAiApiKey,
-				defaultHeaders: this.options.openAiHeaders,
+				defaultHeaders: { ...this.options.openAiHeaders, "X-Task-ID": this.options.taskId },
 			})
 		}
 	}
 
 	@withRetry()
 	async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
-		const modelId = this.options.openAiModelId ?? ""
+		const model = this.getModel()
+		const modelId = model.id
 		const isDeepseekReasoner = modelId.includes("deepseek-reasoner")
 		const isR1FormatRequired = this.options.openAiModelInfo?.isR1FormatRequired ?? false
 		const isReasoningModelFamily = modelId.includes("o1") || modelId.includes("o3") || modelId.includes("o4")
@@ -94,19 +101,58 @@ export class OpenAiHandler implements ApiHandler {
 			}
 
 			if (chunk.usage) {
-				yield {
-					type: "usage",
-					inputTokens: chunk.usage.prompt_tokens || 0,
-					outputTokens: chunk.usage.completion_tokens || 0,
-				}
+				yield* this.yieldUsage(model.info, chunk.usage)
 			}
 		}
 	}
 
 	getModel(): { id: string; info: ModelInfo } {
+		const modelId = this.options.openAiModelId
+		if (modelId) {
+			if (modelId in deepSeekModels) {
+				const id = modelId as DeepSeekModelId
+				return { id, info: deepSeekModels[id] }
+			}
+			if (modelId in geminiModels) {
+				const id = modelId as GeminiModelId
+				return { id, info: geminiModels[id] }
+			}
+			if (modelId in openAiNativeModels) {
+				const id = modelId as OpenAiNativeModelId
+				return { id, info: openAiNativeModels[id] }
+			}
+			if (modelId in anthropicModels) {
+				const id = modelId as AnthropicModelId
+				return { id, info: anthropicModels[id] }
+			}
+		}
+
 		return {
 			id: this.options.openAiModelId ?? "",
 			info: this.options.openAiModelInfo ?? openAiModelInfoSaneDefaults,
+		}
+	}
+
+	private async *yieldUsage(info: ModelInfo, usage: OpenAI.Completions.CompletionUsage | undefined): ApiStream {
+		interface openAiUsage extends OpenAI.CompletionUsage {
+			prompt_cache_hit_tokens?: number
+			prompt_cache_miss_tokens?: number
+		}
+		const deepUsage = usage as openAiUsage
+
+		const inputTokens = deepUsage?.prompt_tokens || 0 // sum of cache hits and misses
+		const outputTokens = deepUsage?.completion_tokens || 0
+		const cacheReadTokens = deepUsage?.prompt_cache_hit_tokens || 0
+		const cacheWriteTokens = deepUsage?.prompt_cache_miss_tokens || 0
+		const totalCost = calculateApiCostOpenAI(info, inputTokens, outputTokens, cacheWriteTokens, cacheReadTokens)
+		const nonCachedInputTokens = Math.max(0, inputTokens - cacheReadTokens - cacheWriteTokens) // this will always be 0
+		yield {
+			type: "usage",
+			inputTokens: inputTokens,
+			outputTokens: outputTokens,
+			cacheWriteTokens: cacheWriteTokens,
+			cacheReadTokens: cacheReadTokens,
+			totalCost: totalCost,
 		}
 	}
 }

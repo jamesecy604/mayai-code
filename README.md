@@ -2,7 +2,17 @@
 English | <a href="https://github.com/mayai/mayai/blob/main/locales/es/README.md" target="_blank">Español</a> | <a href="https://github.com/mayai/mayai/blob/main/locales/de/README.md" target="_blank">Deutsch</a> | <a href="https://github.com/mayai/mayai/blob/main/locales/ja/README.md" target="_blank">日本語</a> | <a href="https://github.com/mayai/mayai/blob/main/locales/zh-cn/README.md" target="_blank">简体中文</a> | <a href="https://github.com/mayai/mayai/blob/main/locales/zh-tw/README.md" target="_blank">繁體中文</a> | <a href="https://github.com/mayai/mayai/blob/main/locales/ko/README.md" target="_blank">한국어</a>
 </sub></div>
 
-# Mayai – \#1 on OpenRouter
+# Mayai (formerly Claude Dev) – \#1 on OpenRouter
+
+> [!NOTE]
+> **Rebranding & Updates Notice**: 
+> - This project was previously known as "Claude Dev" and has been rebranded to "Mayai" to better reflect its expanded capabilities
+> - The OpenAI provider has been updated with new functionality including:
+>   - Improved streaming support
+>   - Better error handling
+>   - Enhanced token counting
+>   - Support for OpenAI's latest models
+> - Existing functionality remains compatible while adding these improvements
 
 <p align="center">
   <img src="https://media.githubusercontent.com/media/mayai/mayai/main/assets/docs/demo.gif" width="100%" />
