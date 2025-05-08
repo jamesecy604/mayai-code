@@ -1,7 +1,9 @@
 import * as vscode from "vscode"
 
 export interface TerminalInfo {
-	terminal: vscode.Terminal
+	terminal: vscode.Terminal & {
+		readonly shellIntegration?: vscode.TerminalShellIntegration
+	}
 	busy: boolean
 	lastCommand: string
 	id: number

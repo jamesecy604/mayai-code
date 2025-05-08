@@ -1,0 +1,6 @@
+git remote add upstream https://github.com/RooVetGit/Roo-Code.git 
+git fetch upstream 
+git checkout main 
+git merge upstream/main 
+git status
+git commit --no-verify -m "Sync upstream changes"; git push origin main --force --no-verify
