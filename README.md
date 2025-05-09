@@ -149,18 +149,18 @@ For example, when working with a local web server, you can use 'Restore Workspac
 
 ## Contributing
 
-To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.md) to learn the basics. You can also join our [Discord](https://discord.gg/mayai) to chat with other contributors in the `#contributors` channel. If you're looking for full-time work, check out our open positions on our [careers page](https://mayai.bot/join-us)!
+To contribute to the project, start with our [Contributing Guide](CONTRIBUTING.md) to learn the basics. 
 
 <details>
 <summary>Local Development Instructions</summary>
 
 1. Clone the repository _(Requires [git-lfs](https://git-lfs.com/))_:
     ```bash
-    git clone https://github.com/mayai/mayai.git
+    git clone https://github.com/jamesecy604/mayai-code
     ```
 2. Open the project in VSCode:
     ```bash
-    code mayai
+    code mayai-code
     ```
 3. Install the necessary dependencies for the extension and webview-gui:
     ```bash
