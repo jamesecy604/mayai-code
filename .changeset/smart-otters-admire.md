@@ -1,5 +1,5 @@
 ---
-"claude-dev": patch
+"mayai": patch
 ---
 
 timestamp visualization

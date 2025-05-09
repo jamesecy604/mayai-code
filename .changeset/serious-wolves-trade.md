@@ -1,5 +1,5 @@
 ---
-"claude-dev": patch
+"mayai": patch
 ---
 
 adding quote reply support

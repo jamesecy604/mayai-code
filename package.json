@@ -1,5 +1,5 @@
 {
-	"name": "claude-dev",
+	"name": "mayai",
 	"displayName": "Mayai",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.14.1",
@@ -11,7 +11,7 @@
 		"name": "Mayai Bot Inc."
 	},
 	"license": "Apache-2.0",
-	"publisher": "saoudrizwan",
+	"publisher": "mayai",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/mayai/mayai"
@@ -47,17 +47,17 @@
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "claude-dev-ActivityBar",
+					"id": "mayai-ActivityBar",
 					"title": "Mayai",
 					"icon": "assets/icons/icon.svg"
 				}
 			]
 		},
 		"views": {
-			"claude-dev-ActivityBar": [
+			"mayai-ActivityBar": [
 				{
 					"type": "webview",
-					"id": "claude-dev.SidebarProvider",
+					"id": "mayai.SidebarProvider",
 					"name": ""
 				}
 			]
@@ -145,64 +145,64 @@
 				{
 					"command": "mayai.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				},
 				{
 					"command": "mayai.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				},
 				{
 					"command": "mayai.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				},
 				{
 					"command": "mayai.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				},
 				{
 					"command": "mayai.accountButtonClicked",
 					"group": "navigation@5",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				},
 				{
 					"command": "mayai.settingsButtonClicked",
 					"group": "navigation@6",
-					"when": "view == claude-dev.SidebarProvider"
+					"when": "view == mayai.SidebarProvider"
 				}
 			],
 			"editor/title": [
 				{
 					"command": "mayai.plusButtonClicked",
 					"group": "navigation@1",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				},
 				{
 					"command": "mayai.mcpButtonClicked",
 					"group": "navigation@2",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				},
 				{
 					"command": "mayai.historyButtonClicked",
 					"group": "navigation@3",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				},
 				{
 					"command": "mayai.popoutButtonClicked",
 					"group": "navigation@4",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				},
 				{
 					"command": "mayai.accountButtonClicked",
 					"group": "navigation@5",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				},
 				{
 					"command": "mayai.settingsButtonClicked",
 					"group": "navigation@6",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
+					"when": "activeWebviewPanelId == mayai.TabPanelProvider"
 				}
 			],
 			"editor/context": [

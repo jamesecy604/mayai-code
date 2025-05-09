@@ -1,5 +1,5 @@
 ---
-"claude-dev": patch
+"mayai": patch
 ---
 
 fix-bedrock-api

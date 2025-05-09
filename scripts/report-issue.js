@@ -12,7 +12,7 @@ const ask = (question) => new Promise((resolve) => rl.question(`\n${question}`, 
 const getMayaiVersion = () => {
 	try {
 		const extensions = execSync("code --list-extensions --show-versions").toString()
-		const mayaiMatch = extensions.match(/claude-dev@(\d+\.\d+\.\d+)/)
+		const mayaiMatch = extensions.match(/mayai@(\d+\.\d+\.\d+)/)
 		return mayaiMatch ? mayaiMatch[1] : "Not installed"
 	} catch (err) {
 		return "Error getting version"

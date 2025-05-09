@@ -1,5 +1,5 @@
 ---
-"claude-dev": minor
+"mayai": minor
 ---
 
 Add ability to generate commit message via mayai

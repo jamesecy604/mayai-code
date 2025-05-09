@@ -1,5 +1,5 @@
 ---
-"claude-dev": patch
+"mayai": patch
 ---
 
 requestVsCodeLmModels protobus migration

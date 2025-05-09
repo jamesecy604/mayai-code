@@ -22,7 +22,7 @@ English | <a href="https://github.com/mayai/mayai/blob/main/locales/es/README.md
 <table>
 <tbody>
 <td align="center">
-<a href="https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" target="_blank"><strong>Download on VS Marketplace</strong></a>
+<a href="https://marketplace.visualstudio.com/items?itemName=mayai.mayai" target="_blank"><strong>Download on VS Marketplace</strong></a>
 </td>
 <td align="center">
 <a href="https://discord.gg/mayai" target="_blank"><strong>Discord</strong></a>
@@ -40,7 +40,7 @@ English | <a href="https://github.com/mayai/mayai/blob/main/locales/es/README.md
 </table>
 </div>
 
-Meet Mayai, an AI assistant that can use your **CLI** a**N**d **E**ditor.
+Meet Mayai, an AI assistant that can use your **CLI** and **E**ditor.
 
 Thanks to [Claude 3.7 Sonnet's agentic coding capabilities](https://www.anthropic.com/claude/sonnet), Mayai can handle complex software development tasks step-by-step. With tools that let him create & edit files, explore large projects, use the browser, and execute terminal commands (after you grant permission), he can assist you in ways that go beyond code completion or tech support. Mayai can even use the Model Context Protocol (MCP) to create new tools and extend his own capabilities. While autonomous AI scripts traditionally run in sandboxed environments, this extension provides a human-in-the-loop GUI to approve every file change and terminal command, providing a safe and accessible way to explore the potential of agentic AI.
 

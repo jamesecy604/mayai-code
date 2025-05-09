@@ -1,5 +1,5 @@
 ---
-"claude-dev": minor
+"mayai": minor
 ---
 
 fetch cache details from generation endpoint

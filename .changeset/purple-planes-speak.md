@@ -1,5 +1,5 @@
 ---
-"claude-dev": minor
+"mayai": minor
 ---
 
 Allow the user to form their next message while Mayai is taking action

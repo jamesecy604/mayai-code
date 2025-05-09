@@ -8,7 +8,7 @@
 <table>
 <tbody>
 <td align="center">
-<a href="https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" target="_blank"><strong>Baixar no VS Marketplace</strong></a>
+<a href="https://marketplace.visualstudio.com/items?itemName=mayai.mayai" target="_blank"><strong>Baixar no VS Marketplace</strong></a>
 </td>
 <td align="center">
 <a href="https://discord.gg/mayai" target="_blank"><strong>Discord</strong></a>
