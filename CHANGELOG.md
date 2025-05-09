@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.14.1]
+## [3.14.0]
 
 -   Disables autocaptures when initializing feature flags
 

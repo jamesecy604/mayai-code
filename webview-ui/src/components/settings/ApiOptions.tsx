@@ -276,11 +276,10 @@ const ApiOptions = ({
 						minWidth: 130,
 						position: "relative",
 					}}>
-					<VSCodeOption value="mayai">Mayai</VSCodeOption>
 					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="bedrock">Amazon Bedrock</VSCodeOption>
-					<VSCodeOption value="openai">OpenAI Compatible</VSCodeOption>
+					<VSCodeOption value="openai">Mayai</VSCodeOption>
 					<VSCodeOption value="vertex">GCP Vertex AI</VSCodeOption>
 					<VSCodeOption value="gemini">Google Gemini</VSCodeOption>
 					<VSCodeOption value="deepseek">DeepSeek</VSCodeOption>
