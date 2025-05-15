@@ -48,7 +48,7 @@ export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
 		case "vertex":
 			return new VertexHandler(options)
 		case "openai":
-			return new OpenAiHandler(options)
+			return options.mayaiTransportType === "http" ? new OpenAiHandler(options) : new WebSocketHandler(options)
 		case "ollama":
 			return new OllamaHandler(options)
 		case "lmstudio":
@@ -71,8 +71,6 @@ export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
 			return new MistralHandler(options)
 		case "vscode-lm":
 			return new VsCodeLmHandler(options)
-		case "mayai":
-			return options.mayaiTransportType === "http" ? new OpenAiHandler(options) : new WebSocketHandler(options)
 		case "litellm":
 			return new LiteLlmHandler(options)
 		case "asksage":
