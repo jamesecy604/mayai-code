@@ -9,6 +9,7 @@ import { OllamaHandler } from "./providers/ollama"
 import { LmStudioHandler } from "./providers/lmstudio"
 import { GeminiHandler } from "./providers/gemini"
 import { OpenAiNativeHandler } from "./providers/openai-native"
+import { WebSocketHandler } from "./providers/websocket"
 import { ApiStream, ApiStreamUsageChunk } from "./transform/stream"
 import { DeepSeekHandler } from "./providers/deepseek"
 import { RequestyHandler } from "./providers/requesty"
@@ -36,6 +37,8 @@ export interface SingleCompletionHandler {
 export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
 	const { apiProvider, ...options } = configuration
 	switch (apiProvider) {
+		case "websocket":
+			return new WebSocketHandler(options)
 		case "anthropic":
 			return new AnthropicHandler(options)
 		case "openrouter":

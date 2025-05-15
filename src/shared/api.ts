@@ -22,6 +22,7 @@ export type ApiProvider =
 	| "asksage"
 	| "xai"
 	| "sambanova"
+	| "websocket"
 
 export interface ApiHandlerOptions {
 	apiModelId?: string

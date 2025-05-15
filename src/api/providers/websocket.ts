@@ -19,7 +19,7 @@ interface WebSocketMessage {
 	error?: string
 }
 
-export class OpenAiHandler implements ApiHandler {
+export class WebSocketHandler implements ApiHandler {
 	private options: ApiHandlerOptions
 	private ws: WebSocket | null = null
 	private connectionPromise: Promise<void> | null = null
@@ -79,62 +79,48 @@ export class OpenAiHandler implements ApiHandler {
 
 		ws.send(JSON.stringify(payload))
 
-		const messageQueue: any[] = []
-		let resolveNext: (() => void) | null = null
+		let resolveNext: (value: any) => void
+		let rejectNext: (reason?: any) => void
+		let pendingPromise = new Promise<any>((resolve, reject) => {
+			resolveNext = resolve
+			rejectNext = reject
+		})
 
 		const messageHandler = (data: Buffer) => {
 			try {
 				const chunk: WebSocketMessage = JSON.parse(data.toString())
 				if (chunk.error) {
-					throw new Error(chunk.error)
+					rejectNext(new Error(chunk.error))
+					return
 				}
 
 				if (chunk.choices?.[0]?.delta?.content) {
-					messageQueue.push({
+					resolveNext({
 						type: "text",
 						text: chunk.choices[0].delta.content,
 					})
-				} else if (chunk.choices?.[0]?.delta?.reasoning_content) {
-					messageQueue.push({
-						type: "reasoning",
-						reasoning: chunk.choices[0].delta.reasoning_content,
-					})
 				} else if (chunk.usage) {
-					messageQueue.push({
+					resolveNext({
 						type: "usage",
 						...this.getUsageData(model.info, chunk.usage),
 					})
 				}
-
-				if (resolveNext) {
-					resolveNext()
-					resolveNext = null
-				}
 			} catch (err) {
-				messageQueue.push(Promise.reject(err as Error))
-				if (resolveNext) {
-					resolveNext()
-					resolveNext = null
-				}
+				rejectNext(err as Error)
 			}
+
+			pendingPromise = new Promise<any>((resolve, reject) => {
+				resolveNext = resolve
+				rejectNext = reject
+			})
 		}
 
 		ws.on("message", messageHandler)
 
 		try {
 			while (true) {
-				if (messageQueue.length === 0) {
-					await new Promise<void>((resolve) => {
-						resolveNext = resolve
-					})
-					continue
-				}
-
-				const message = messageQueue.shift()
-				if (message instanceof Promise) {
-					throw await message
-				}
-				yield message
+				const result = await pendingPromise
+				yield result
 			}
 		} finally {
 			ws.off("message", messageHandler)
