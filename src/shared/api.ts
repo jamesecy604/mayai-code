@@ -30,6 +30,7 @@ export interface ApiHandlerOptions {
 	clineApiKey?: string
 	taskId?: string // Used to identify the task in API requests
 	liteLlmBaseUrl?: string
+	mayaiTransportType?: string
 	liteLlmModelId?: string
 	liteLlmApiKey?: string
 	liteLlmUsePromptCache?: boolean

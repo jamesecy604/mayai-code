@@ -72,7 +72,7 @@ export function buildApiHandler(configuration: ApiConfiguration): ApiHandler {
 		case "vscode-lm":
 			return new VsCodeLmHandler(options)
 		case "mayai":
-			return new ClineHandler(options)
+			return options.mayaiTransportType === "http" ? new OpenAiHandler(options) : new WebSocketHandler(options)
 		case "litellm":
 			return new LiteLlmHandler(options)
 		case "asksage":

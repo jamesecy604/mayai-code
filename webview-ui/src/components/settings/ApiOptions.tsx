@@ -299,10 +299,25 @@ const ApiOptions = ({
 				</VSCodeDropdown>
 			</DropdownContainer>
 
-			{selectedProvider === "mayai" && (
-				<div style={{ marginBottom: 14, marginTop: 4 }}>
-					<MayaiAccountInfoCard />
-				</div>
+			{selectedProvider === "openai" && (
+				<>
+					<VSCodeRadioGroup
+						value={apiConfiguration?.mayaiTransportType ?? "http"}
+						onChange={(e) => {
+							const value = (e.target as HTMLInputElement)?.value
+							setApiConfiguration({
+								...apiConfiguration,
+								mayaiTransportType: value as "http" | "p2p",
+							})
+						}}
+						style={{ marginTop: 10 }}>
+						<VSCodeRadio value="http">HTTP</VSCodeRadio>
+						<VSCodeRadio value="p2p">P2P</VSCodeRadio>
+					</VSCodeRadioGroup>
+					<div style={{ marginBottom: 14, marginTop: 4 }}>
+						<MayaiAccountInfoCard />
+					</div>
+				</>
 			)}
 
 			{selectedProvider === "asksage" && (
@@ -2200,7 +2215,7 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration): 
 			}
 		case "mayai":
 			return {
-				selectedProvider: provider,
+				selectedProvider: apiConfiguration?.mayaiTransportType === "p2p" ? "websocket" : "openai",
 				selectedModelId: apiConfiguration?.openRouterModelId || openRouterDefaultModelId,
 				selectedModelInfo: apiConfiguration?.openRouterModelInfo || openRouterDefaultModelInfo,
 			}

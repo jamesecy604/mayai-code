@@ -66,6 +66,7 @@ export type GlobalStateKey =
 	| "previousModeAwsBedrockCustomModelBaseId"
 	| "previousModeModelInfo"
 	| "liteLlmBaseUrl"
+	| "mayaiTransportType"
 	| "liteLlmModelId"
 	| "liteLlmUsePromptCache"
 	| "qwenApiLine"

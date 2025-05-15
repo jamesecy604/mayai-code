@@ -106,6 +106,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		chatSettings,
 		vsCodeLmModelSelector,
 		liteLlmBaseUrl,
+		mayaiTransportType,
 		liteLlmModelId,
 		liteLlmUsePromptCache,
 		userInfo,
@@ -185,6 +186,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "chatSettings") as Promise<ChatSettings | undefined>,
 		getGlobalState(context, "vsCodeLmModelSelector") as Promise<vscode.LanguageModelChatSelector | undefined>,
 		getGlobalState(context, "liteLlmBaseUrl") as Promise<string | undefined>,
+		getGlobalState(context, "mayaiTransportType") as Promise<string | undefined>,
 		getGlobalState(context, "liteLlmModelId") as Promise<string | undefined>,
 		getGlobalState(context, "liteLlmUsePromptCache") as Promise<boolean | undefined>,
 		getGlobalState(context, "userInfo") as Promise<UserInfo | undefined>,
@@ -303,6 +305,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 			thinkingBudgetTokens,
 			reasoningEffort,
 			liteLlmBaseUrl,
+			mayaiTransportType,
 			liteLlmModelId,
 			liteLlmApiKey,
 			liteLlmUsePromptCache,
@@ -385,6 +388,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 		openRouterProviderSorting,
 		vsCodeLmModelSelector,
 		liteLlmBaseUrl,
+		mayaiTransportType,
 		liteLlmModelId,
 		liteLlmApiKey,
 		liteLlmUsePromptCache,
@@ -443,6 +447,7 @@ export async function updateApiConfiguration(context: vscode.ExtensionContext, a
 	await updateGlobalState(context, "openRouterProviderSorting", openRouterProviderSorting)
 	await updateGlobalState(context, "vsCodeLmModelSelector", vsCodeLmModelSelector)
 	await updateGlobalState(context, "liteLlmBaseUrl", liteLlmBaseUrl)
+	await updateGlobalState(context, "mayaiTransportType", mayaiTransportType)
 	await updateGlobalState(context, "liteLlmModelId", liteLlmModelId)
 	await updateGlobalState(context, "liteLlmUsePromptCache", liteLlmUsePromptCache)
 	await updateGlobalState(context, "qwenApiLine", qwenApiLine)
