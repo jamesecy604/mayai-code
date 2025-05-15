@@ -11,6 +11,7 @@ interface WebSocketMessage {
 			content?: string
 			reasoning_content?: string
 		}
+		finish_reason?: string
 	}>
 	usage?: {
 		prompt_tokens: number
@@ -81,12 +82,22 @@ export class OpenAiHandler implements ApiHandler {
 
 		const messageQueue: any[] = []
 		let resolveNext: (() => void) | null = null
+		let isStreamComplete = false
 
 		const messageHandler = (data: Buffer) => {
 			try {
 				const chunk: WebSocketMessage = JSON.parse(data.toString())
 				if (chunk.error) {
 					throw new Error(chunk.error)
+				}
+
+				// Check for stream completion
+				if (chunk.choices?.[0]?.finish_reason) {
+					isStreamComplete = true
+					if (resolveNext) {
+						resolveNext()
+					}
+					return
 				}
 
 				if (chunk.choices?.[0]?.delta?.content) {
@@ -110,11 +121,11 @@ export class OpenAiHandler implements ApiHandler {
 					resolveNext()
 					resolveNext = null
 				}
-			} catch (err) {
-				messageQueue.push(Promise.reject(err as Error))
+			} catch (error) {
+				isStreamComplete = true
+				messageQueue.push(Promise.reject(error))
 				if (resolveNext) {
 					resolveNext()
-					resolveNext = null
 				}
 			}
 		}
@@ -123,18 +134,19 @@ export class OpenAiHandler implements ApiHandler {
 
 		try {
 			while (true) {
-				if (messageQueue.length === 0) {
+				if (messageQueue.length > 0) {
+					const message = messageQueue.shift()
+					if (message instanceof Promise) {
+						throw await message
+					}
+					yield message
+				} else if (isStreamComplete) {
+					return
+				} else {
 					await new Promise<void>((resolve) => {
 						resolveNext = resolve
 					})
-					continue
 				}
-
-				const message = messageQueue.shift()
-				if (message instanceof Promise) {
-					throw await message
-				}
-				yield message
 			}
 		} finally {
 			ws.off("message", messageHandler)
