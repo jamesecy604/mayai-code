@@ -11,6 +11,7 @@ interface WebSocketMessage {
 			content?: string
 			reasoning_content?: string
 		}
+		finish_reason?: string
 	}>
 	usage?: {
 		prompt_tokens: number
@@ -79,48 +80,73 @@ export class WebSocketHandler implements ApiHandler {
 
 		ws.send(JSON.stringify(payload))
 
-		let resolveNext: (value: any) => void
-		let rejectNext: (reason?: any) => void
-		let pendingPromise = new Promise<any>((resolve, reject) => {
-			resolveNext = resolve
-			rejectNext = reject
-		})
+		const messageQueue: any[] = []
+		let resolveNext: (() => void) | null = null
+		let isStreamComplete = false
 
 		const messageHandler = (data: Buffer) => {
 			try {
 				const chunk: WebSocketMessage = JSON.parse(data.toString())
 				if (chunk.error) {
-					rejectNext(new Error(chunk.error))
+					throw new Error(chunk.error)
+				}
+
+				// Check for stream completion
+				if (chunk.choices?.[0]?.finish_reason) {
+					isStreamComplete = true
+					if (resolveNext) {
+						resolveNext()
+					}
 					return
 				}
 
 				if (chunk.choices?.[0]?.delta?.content) {
-					resolveNext({
+					messageQueue.push({
 						type: "text",
 						text: chunk.choices[0].delta.content,
 					})
+				} else if (chunk.choices?.[0]?.delta?.reasoning_content) {
+					messageQueue.push({
+						type: "reasoning",
+						reasoning: chunk.choices[0].delta.reasoning_content,
+					})
 				} else if (chunk.usage) {
-					resolveNext({
+					messageQueue.push({
 						type: "usage",
 						...this.getUsageData(model.info, chunk.usage),
 					})
 				}
-			} catch (err) {
-				rejectNext(err as Error)
-			}
 
-			pendingPromise = new Promise<any>((resolve, reject) => {
-				resolveNext = resolve
-				rejectNext = reject
-			})
+				if (resolveNext) {
+					resolveNext()
+					resolveNext = null
+				}
+			} catch (error) {
+				isStreamComplete = true
+				messageQueue.push(Promise.reject(error))
+				if (resolveNext) {
+					resolveNext()
+				}
+			}
 		}
 
 		ws.on("message", messageHandler)
 
 		try {
 			while (true) {
-				const result = await pendingPromise
-				yield result
+				if (messageQueue.length > 0) {
+					const message = messageQueue.shift()
+					if (message instanceof Promise) {
+						throw await message
+					}
+					yield message
+				} else if (isStreamComplete) {
+					return
+				} else {
+					await new Promise<void>((resolve) => {
+						resolveNext = resolve
+					})
+				}
 			}
 		} finally {
 			ws.off("message", messageHandler)
