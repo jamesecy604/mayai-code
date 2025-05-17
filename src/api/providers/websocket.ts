@@ -4,6 +4,11 @@ import { ApiHandlerOptions, ModelInfo, openAiModelInfoSaneDefaults } from "@shar
 import { ApiHandler } from "../index"
 import { ApiStream } from "../transform/stream"
 import { calculateApiCostOpenAI } from "../../utils/cost"
+import { geminiDefaultModelId, GeminiModelId, geminiModels } from "../../shared/api"
+import { DeepSeekModelId, deepSeekDefaultModelId, deepSeekModels } from "../../shared/api"
+import { openRouterDefaultModelId, openRouterDefaultModelInfo } from "../../shared/api"
+import { anthropicDefaultModelId, AnthropicModelId, anthropicModels } from "../../shared/api"
+import { openAiNativeDefaultModelId, OpenAiNativeModelId, openAiNativeModels } from "../../shared/api"
 
 interface WebSocketMessage {
 	choices?: Array<{
@@ -16,6 +21,8 @@ interface WebSocketMessage {
 	usage?: {
 		prompt_tokens: number
 		completion_tokens: number
+		prompt_cache_miss_tokens: number
+		prompt_cache_hit_tokens: number
 	}
 	error?: string
 }
@@ -91,6 +98,13 @@ export class WebSocketHandler implements ApiHandler {
 					throw new Error(chunk.error)
 				}
 
+				if (chunk.usage) {
+					messageQueue.push({
+						type: "usage",
+						...this.getUsageData(model.info, chunk.usage),
+					})
+				}
+
 				// Check for stream completion
 				if (chunk.choices?.[0]?.finish_reason) {
 					isStreamComplete = true
@@ -105,15 +119,11 @@ export class WebSocketHandler implements ApiHandler {
 						type: "text",
 						text: chunk.choices[0].delta.content,
 					})
-				} else if (chunk.choices?.[0]?.delta?.reasoning_content) {
+				}
+				if (chunk.choices?.[0]?.delta?.reasoning_content) {
 					messageQueue.push({
 						type: "reasoning",
 						reasoning: chunk.choices[0].delta.reasoning_content,
-					})
-				} else if (chunk.usage) {
-					messageQueue.push({
-						type: "usage",
-						...this.getUsageData(model.info, chunk.usage),
 					})
 				}
 
@@ -154,19 +164,53 @@ export class WebSocketHandler implements ApiHandler {
 	}
 
 	getModel(): { id: string; info: ModelInfo } {
+		const modelId = this.options.openAiModelId
+		if (modelId) {
+			if (modelId in deepSeekModels) {
+				const id = modelId as DeepSeekModelId
+				return { id, info: deepSeekModels[id] }
+			}
+			if (modelId in geminiModels) {
+				const id = modelId as GeminiModelId
+				return { id, info: geminiModels[id] }
+			}
+			if (modelId in openAiNativeModels) {
+				const id = modelId as OpenAiNativeModelId
+				return { id, info: openAiNativeModels[id] }
+			}
+			if (modelId in anthropicModels) {
+				const id = modelId as AnthropicModelId
+				return { id, info: anthropicModels[id] }
+			}
+		}
+
 		return {
-			id: this.options.openAiModelId || "websocket-default",
-			info: this.options.openAiModelInfo || openAiModelInfoSaneDefaults,
+			id: this.options.openAiModelId ?? "",
+			info: this.options.openAiModelInfo ?? openAiModelInfoSaneDefaults,
 		}
 	}
 
-	private getUsageData(info: ModelInfo, usage: { prompt_tokens: number; completion_tokens: number }) {
+	private getUsageData(
+		info: ModelInfo,
+		usage: {
+			prompt_tokens: number
+			completion_tokens: number
+			prompt_cache_hit_tokens: number
+			prompt_cache_miss_tokens: number
+		},
+	) {
 		return {
 			inputTokens: usage.prompt_tokens || 0,
 			outputTokens: usage.completion_tokens || 0,
-			cacheWriteTokens: 0,
-			cacheReadTokens: 0,
-			totalCost: calculateApiCostOpenAI(info, usage.prompt_tokens || 0, usage.completion_tokens || 0, 0, 0),
+			cacheWriteTokens: usage.prompt_cache_miss_tokens || 0,
+			cacheReadTokens: usage.prompt_cache_hit_tokens || 0,
+			totalCost: calculateApiCostOpenAI(
+				info,
+				usage.prompt_tokens || 0,
+				usage.completion_tokens || 0,
+				usage.prompt_cache_miss_tokens || 0,
+				usage.prompt_cache_hit_tokens || 0,
+			),
 		}
 	}
 }

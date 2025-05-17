@@ -11,7 +11,9 @@
 			"request": "launch",
 			"args": ["--extensionDevelopmentPath=${workspaceFolder}", "--disable-workspace-trust", "${workspaceFolder}"],
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
-			"preLaunchTask": "${defaultBuildTask}",
+			"preLaunchTask": "npm: watch:esbuild",
+			"sourceMaps": true,
+			"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
 			"env": {
 				"IS_DEV": "true",
 				"DEV_WORKSPACE_FOLDER": "${workspaceFolder}"

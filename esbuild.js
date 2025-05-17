@@ -120,7 +120,7 @@ const copyWasmFiles = {
 const extensionConfig = {
 	bundle: true,
 	minify: production,
-	sourcemap: !production,
+	sourcemap: !production || process.env.IS_DEV === "true",
 	logLevel: "silent",
 	define: {
 		"process.env.IS_DEV": JSON.stringify(!production),
