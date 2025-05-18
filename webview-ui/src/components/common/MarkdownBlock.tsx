@@ -62,9 +62,9 @@ const remarkUrlToLink = () => {
  */
 const remarkPreventBoldFilenames = () => {
 	return (tree: any) => {
-		visit(tree, "strong", (node: any, index: number | undefined, parent: any) => {
+		visit(tree, "strong", (node: any, index: number | null, parent: any) => {
 			// Only process if there's a next node (potential file extension)
-			if (!parent || typeof index === "undefined" || index === parent.children.length - 1) return
+			if (!parent || index === null || index === parent.children.length - 1) return
 
 			const nextNode = parent.children[index + 1]
 
